@@ -531,8 +531,12 @@ export default {
     methods: {
         test_api() {
             console.log("test api")
+            const now_options = this.options
+            const now_constraints = JSON.parse(sessionStorage.getItem("constraint_list_data"))
             test_api({
-                test: "Meow"
+                test: "Meow",
+                options: now_options,
+                constraints: now_constraints,
             }).then((response) => {
                 let ret = response.data
                 console.log(ret)

@@ -1,5 +1,5 @@
 <template>
-    <a-list item-layout="horizontal" :data-source="data">
+    <a-list v-if="data !== undefined" item-layout="horizontal" :data-source="data">
         <template #renderItem="{ item, index }">
             <a-list-item>
                 <a-list-item-meta
@@ -25,6 +25,10 @@
             </a-list-item>
         </template>
     </a-list>
+
+    <div v-else>
+        <a-empty></a-empty>
+    </div>
 </template>
 
 <script>

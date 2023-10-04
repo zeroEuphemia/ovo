@@ -1,5 +1,5 @@
 <template>
-    <a-card style="width: 300px">
+    <a-card v-if="item !== undefined" style="width: 300px">
         
         <!-- <template #cover>
             <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
@@ -29,6 +29,10 @@
         </div>
 
     </a-card>
+
+    <div v-else>
+        <a-empty></a-empty>
+    </div>
 </template>
 
 <script>

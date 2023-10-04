@@ -1,6 +1,6 @@
 <template>
     <!-- <h1>Meow</h1> -->
-    <a-list item-layout="horizontal" :data-source="constraints">
+    <a-list item-layout="horizontal" :data-source="constraints_display">
         <template #renderItem="{ item, index }">
             <a-list-item v-if="index === chosen_id" class="chosen">
                 <div class="list-item">
@@ -79,6 +79,8 @@ export default {
     data() {
 		return {
             chosen_id: 0,
+            screen_list: [],
+            constraints_display: [],
             constraints: [
                 [
                     {
@@ -132,6 +134,10 @@ export default {
     },
 
     mounted() {
+        if(this.chosen_id >= this.constraints.length) {
+            this.$emit('notifyConCard', undefined)
+            return 
+        }
         const new_item = this.constraints[this.chosen_id]
         this.$emit('notifyConCard', new_item)
     },
@@ -144,6 +150,25 @@ export default {
             const storedData = sessionStorage.getItem("constraint_list_data")
             if (storedData)
                 this.constraints = JSON.parse(storedData)
+            
+            this.screen_list = []
+            this.constraints_display = []
+            for(let i = 0; i < this.constraints.length; i ++)
+                this.constraints_display.push(this.constraints[i])
+            
+            this.chosen_id = 0
+            // if(this.constraints_display.length === 0)
+            //     this.$emit('notifyConCard', undefined)
+        },
+
+        cleanUp() {
+            this.chosen_id = 0
+            this.screen_list = []
+            this.constraints_display = []
+            this.constraints = []
+            this.$emit('notifyConCard', undefined)
+
+            sessionStorage.setItem("constraint_list_data", JSON.stringify(this.constraints))
         },
 
         set_chosen_id(index) {
@@ -155,6 +180,38 @@ export default {
         add_constraint(new_constraint) {
             this.constraints.push(new_constraint)
             sessionStorage.setItem("constraint_list_data", JSON.stringify(this.constraints))
+            
+            console.log(this.screen_list)
+            console.log(new_constraint)
+            for(let i = 0; i < new_constraint.length; i ++)
+                if(this.screen_list.includes(new_constraint[i].name)) {
+                    console.log(new_constraint[i])
+                    this.constraints_display.push(new_constraint)
+                    break
+                }
+        },
+
+        set_screen(screen_list) {
+            this.screen_list = screen_list
+            this.constraints_display = []
+            for(let i = 0; i < this.constraints.length; i ++) {
+                let flag = false
+                for(let j = 0; j < this.constraints[i].length; j ++)
+                    if(screen_list.includes(this.constraints[i][j].name)) {
+                        flag = true
+                        break
+                    }
+                if(flag)
+                    this.constraints_display.push(this.constraints[i])
+            }
+            this.set_chosen_id(0)
+        },
+        cancel_screen() {
+            this.screen_list = []
+            this.constraints_display = []
+            for(let i = 0; i < this.constraints.length; i ++)
+                this.constraints_display.push(this.constraints[i])
+            this.set_chosen_id(0)
         },
     },
 }

@@ -50,7 +50,7 @@
 
                 <div v-if="state === 1" class="down-content">
                     <div class="buttons">
-                        <a-button>
+                        <a-button @click="clean_opt">
                             <DeleteOutlined />
                             Clean
                         </a-button>
@@ -84,7 +84,7 @@
 
                 <div v-if="state === 2" class="down-content">
                     <div class="buttons">
-                        <a-button>
+                        <a-button @click="clean_conList">
                             <DeleteOutlined />
                             Clean
                         </a-button>
@@ -102,9 +102,40 @@
                         </div>
                     </div>
 
-                    <div class="buttons">
-                        <a-checkbox v-model:checked="screen">Screen</a-checkbox>
+                    <div class="buttons" style="align-items: center;">
+                        <a-checkbox v-model:checked="screen" @change="change_screen">
+                            Screen
+                        </a-checkbox>
+                        
+                        <div style="padding-left: 20px;">
+                            <a-select
+                                show-search
+                                v-model:value="screen_new"
+                                :options = "select_options"
+                                placeholder="Select a Option"
+                                style="width: 100px" >
+                            </a-select>
+                        </div>
+                        
+                        <div style="padding-left: 20px;">
+                            <a-button :disabled = "screen_new === undefined"
+                                @click="add_screen">
+                                <PlusOutlined />
+                                add
+                            </a-button>
+                        </div>
                     </div>
+                    
+                    <div class="buttons">
+                        <div v-for="(tag, index) in screen_list" :key="tag">
+                            <a-tag closable 
+                                @close="closeTag(tag)">
+                                {{ tag }}
+                            </a-tag>
+                        </div>
+                        
+                    </div>
+
 
                     <div class="down">
                         <div>
@@ -420,11 +451,15 @@ export default {
                 { value: "QAQ-Meow", lable: "QAQ-Meow" },
                 { value: "A", lable: "A" },
             ],
+
+
+            screen: false,
+            screen_list: ["Meow", "QAQ"],
+            screen_new: undefined,
             
             visible: false,
             state: 1,
             Steps: ["Step 1", "Step 2", "Step 3", "Step 4"],
-            screen: true,
             formState: {
                 name: '',
                 type: undefined,
@@ -522,6 +557,54 @@ export default {
             if(stateDate)
                 this.state = JSON.parse(stateDate)
         },
+        
+        clean_opt() {
+            this.$refs.childComponent.cleanUp()
+            sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
+            // console.log(this.$refs.conList)
+        },
+
+        clean_conList() {
+            this.$refs.conList.cleanUp()
+        },
+
+        change_screen() {
+            if(this.screen)
+                this.$refs.conList.set_screen(this.screen_list)
+            else
+                this.$refs.conList.cancel_screen()
+        },
+        
+        add_screen() {
+            if(this.screen_new != undefined) {
+                let flag = false
+                for(let i = 0; i < this.screen_list.length; i ++)
+                    if(this.screen_new === this.screen_list[i]) {
+                        flag = true
+                        break
+                    }
+                if(flag)
+                    message.error('This is an error message')
+                else {
+                    this.screen_list.push(this.screen_new)
+                    this.screen_new = undefined
+                }
+
+                if(this.screen)
+                    this.$refs.conList.set_screen(this.screen_list)
+            }
+        },
+
+        closeTag(removedTag) {
+            // const tags = state.tags.filter(tag => tag !== removedTag);
+            const tags = this.screen_list.filter(tag => tag !== removedTag)
+            console.log(tags);
+            this.screen_list = tags
+
+            if(this.screen)
+                this.$refs.conList.set_screen(this.screen_list)
+        },
+
         cleanSelected() {
             this.selected = []
         },

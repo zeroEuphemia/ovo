@@ -60,16 +60,6 @@ export default {
     components: { defineComponent, message, },
     data() {
 		return {
-            new_select: undefined,
-            select_options: [
-                // "Meow", "QAQ", "QAQ-Meow", "A"
-                { value: "Meow", lable: "Meow" },
-                { value: "QAQ", lable: "QAQ" },
-                { value: "QAQ-Meow", lable: "QAQ-Meow" },
-                { value: "A", lable: "A" },
-            ],
-            visible_con: false,
-
             chosen_id: 0,
             receivedMessage: {},
             number: 4,
@@ -123,6 +113,10 @@ export default {
     //     }
     // },
     mounted() {
+        if(this.chosen_id >= this.data.length) {
+            this.$emit('notifyChild2', undefined)
+            return 
+        }
         const new_item = this.data[this.chosen_id]
         this.$emit('notifyChild2', new_item)
     },
@@ -135,8 +129,36 @@ export default {
             // 在组件创建时尝试从 sessionStorage 中加载数据
             // const jsonObject = JSON.parse(jsonString)
             const storedData = sessionStorage.getItem("option_list_data")
-            if (storedData)
+            if (storedData) {
                 this.data = JSON.parse(storedData)
+                this.number = this.data.length
+                this.chosen_id = 0
+                this.receivedMessage = {}
+                this.number = this.data.length
+                // if(this.number === 0)
+                //     this.$emit('notifyChild2', undefined)
+            }
+
+            /*
+            chosen_id: 0,
+            receivedMessage: {},
+            number: 4,
+            */
+        },
+
+        cleanUp() {
+
+            // chosen_id: 0,
+            // receivedMessage: {},
+            // number: 4,
+            // data:
+
+            this.chosen_id = 0
+            this.$emit('notifyChild2', undefined)
+            this.receivedMessage = {}
+            this.number = 0
+            this.data = []
+            sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
         },
 
         set_chosen_id(index) {

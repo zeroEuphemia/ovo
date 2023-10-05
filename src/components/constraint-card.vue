@@ -1,42 +1,64 @@
 <template>
-    <a-list v-if="data !== undefined" item-layout="horizontal" :data-source="data">
-        <template #renderItem="{ item, index }">
-            <a-list-item>
-                <a-list-item-meta
-                    :description = item.description>
-                    <template #title>
-                        {{ item.name + " ( " + item.type + " ) " }}
-                    </template>
+    <div class="Card">
+        <a-card>
+            <div class="card-buttons">
+                <a-button type="text" @click="delete_constraint"
+                :disabled = "data === undefined">
+                    <DeleteOutlined></DeleteOutlined>
+                </a-button>
+                <a-button type="text" :disabled = "data === undefined">
+                    <edit-outlined></edit-outlined>
+                </a-button>
+                <a-button type="text" :disabled = "data === undefined">
+                    <ellipsis-outlined></ellipsis-outlined>
+                </a-button>
+            </div>
+        </a-card>
+        
+        <a-list v-if="data !== undefined" item-layout="horizontal" :data-source="data"
+            style="padding: 0;">
+            <template #renderItem="{ item, index }">
+                <a-list-item>
+                    <a-list-item-meta
+                        :description = item.description>
+                        <template #title>
+                            {{ item.name + " ( " + item.type + " ) " }}
+                        </template>
+                        
+                        <template #avatar>
+                            <!-- <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> -->
+                            <a-avatar v-if="item.type === 'Boolean'" class="boolean-avatar">01</a-avatar>
+                            <a-avatar v-if="item.type === 'Integer'" class="integer-avatar">Z</a-avatar>
+                            <a-avatar v-if="item.type === 'Float'" class="float-avatar">R</a-avatar>
+                            <a-avatar v-if="item.type === 'Category'" class="category-avatar">C</a-avatar>
+                        </template>
+                    </a-list-item-meta>
                     
-                    <template #avatar>
-                        <!-- <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> -->
-                        <a-avatar v-if="item.type === 'Boolean'" class="boolean-avatar">01</a-avatar>
-                        <a-avatar v-if="item.type === 'Integer'" class="integer-avatar">Z</a-avatar>
-                        <a-avatar v-if="item.type === 'Float'" class="float-avatar">R</a-avatar>
-                        <a-avatar v-if="item.type === 'Category'" class="category-avatar">C</a-avatar>
-                    </template>
-                </a-list-item-meta>
-                
-                <div class="Tag">
-                    <a-tag v-for="it in item.possible">
-                        {{ it }}
-                    </a-tag>
-                </div>
-            </a-list-item>
-        </template>
-    </a-list>
+                    <div class="Tag">
+                        <a-tag v-for="it in item.possible">
+                            {{ it }}
+                        </a-tag>
+                    </div>
+                </a-list-item>
+            </template>
+        </a-list>
 
-    <div v-else>
-        <a-empty></a-empty>
+        <div v-else>
+            <a-empty></a-empty>
+        </div>
     </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 import { message } from 'ant-design-vue'
+import { EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 export default {
     name: "ConstraintCard",
-    components: { defineComponent, message, },
+    components: { 
+        defineComponent, message,
+        EditOutlined, EllipsisOutlined, DeleteOutlined,
+    },
     data() {
         return {
             data: [
@@ -88,12 +110,34 @@ export default {
         executeFunctionInConCard(new_item) {
             console.log(new_item)
             this.data = new_item
+        },
+
+        delete_constraint() {
+            this.$emit('deleteCon', this.data)
         }
     },
 };
 </script>
     
 <style scoped>
+
+.Card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0;
+}
+
+.buttons {
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 1.5714285714285714;
+}
 
 .boolean-avatar {
     background-color: #ACB1D6;

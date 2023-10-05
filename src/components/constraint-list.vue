@@ -143,6 +143,7 @@ export default {
         const new_item = this.constraints[this.chosen_id]
         this.$emit('notifyConCard', new_item)
     },
+    
     created() {
         // 在组件创建时加载数据
         this.loadDataFromSessionStorage()
@@ -153,6 +154,7 @@ export default {
             if (storedData)
                 this.constraints = JSON.parse(storedData)
             
+            this.isScreened = false
             this.screen_list = []
             this.constraints_display = []
             for(let i = 0; i < this.constraints.length; i ++)
@@ -161,6 +163,23 @@ export default {
             this.chosen_id = 0
             // if(this.constraints_display.length === 0)
             //     this.$emit('notifyConCard', undefined)
+        },
+
+        delete_constraint(removedItem) {
+            // console.log(removedItem)
+            const constraints = this.constraints.filter(item => item !== removedItem)
+            this.constraints = constraints
+            sessionStorage.setItem("constraint_list_data", JSON.stringify(this.constraints))
+
+            this.set_chosen_id(0)
+            this.constraints_display = []
+            if(this.isScreened)
+                this.set_screen(this.screen_list)
+            
+            else {
+                for(let i = 0; i < this.constraints.length; i ++)
+                    this.constraints_display.push(this.constraints[i])
+            }
         },
 
         cleanUp() {
@@ -175,8 +194,12 @@ export default {
 
         set_chosen_id(index) {
             this.chosen_id = index
-            const new_item = this.constraints[this.chosen_id]
-            this.$emit('notifyConCard', new_item)
+            if(this.constraints.length > index) {
+                const new_item = this.constraints[this.chosen_id]
+                this.$emit('notifyConCard', new_item)
+            }
+            else
+                this.$emit('notifyConCard', undefined)
         },
 
         add_constraint(new_constraint) {
@@ -195,6 +218,9 @@ export default {
             }
             else
                 this.constraints_display.push(new_constraint)
+            
+            if(this.constraints_display.length === 1)
+                this.set_chosen_id(0)
         },
 
         set_screen(screen_list) {

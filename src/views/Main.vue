@@ -153,7 +153,8 @@
                             </ConstraintList>
                         </div>
                         <div style="width: 500px; padding-left: 50px;">
-                            <ConstraintCard ref="conCard"></ConstraintCard>
+                            <ConstraintCard ref="conCard"
+                            @deleteCon="delete_constraint"></ConstraintCard>
                         </div>
                     </div>
                 </div>
@@ -571,6 +572,11 @@ export default {
             }).catch(error => {
                 console.error(error);
             });
+        },
+
+        delete_constraint(removedItem) {
+            // console.log(removedItem)
+            this.$refs.conList.delete_constraint(removedItem)
         },
 
         download_tc() {

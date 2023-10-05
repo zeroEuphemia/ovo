@@ -1,6 +1,7 @@
 <template>
     <!-- <h1>Meow</h1> -->
-    <a-list item-layout="horizontal" :data-source="constraints_display">
+    <a-list item-layout="horizontal" :data-source="constraints_display"
+        style="width: 780px">
         <template #renderItem="{ item, index }">
             <a-list-item v-if="index === chosen_id" class="chosen">
                 <div class="list-item">
@@ -26,7 +27,7 @@
                         </div>
                     </div>
 
-                    <div class="items">
+                    <div v-if="item.length > 3" class="items">
                         <div  class="in_items" style="padding-left: 10px; font-weight: 500; font-size: 18px;">
                             ...
                         </div>
@@ -58,7 +59,7 @@
                         </div>
                     </div>
 
-                    <div class="items">
+                    <div v-if="item.length > 3" class="items">
                         <div  class="in_items" style="padding-left: 10px; font-weight: 500; font-size: 18px;">
                             ...
                         </div>
@@ -80,6 +81,7 @@ export default {
 		return {
             chosen_id: 0,
             screen_list: [],
+            isScreened: false,
             constraints_display: [],
             constraints: [
                 [
@@ -181,17 +183,22 @@ export default {
             this.constraints.push(new_constraint)
             sessionStorage.setItem("constraint_list_data", JSON.stringify(this.constraints))
             
-            console.log(this.screen_list)
-            console.log(new_constraint)
-            for(let i = 0; i < new_constraint.length; i ++)
-                if(this.screen_list.includes(new_constraint[i].name)) {
-                    console.log(new_constraint[i])
-                    this.constraints_display.push(new_constraint)
-                    break
-                }
+            if(this.isScreened) {
+                console.log(this.screen_list)
+                console.log(new_constraint)
+                for(let i = 0; i < new_constraint.length; i ++)
+                    if(this.screen_list.includes(new_constraint[i].name)) {
+                        console.log(new_constraint[i])
+                        this.constraints_display.push(new_constraint)
+                        break
+                    }
+            }
+            else
+                this.constraints_display.push(new_constraint)
         },
 
         set_screen(screen_list) {
+            this.isScreened = true
             this.screen_list = screen_list
             this.constraints_display = []
             for(let i = 0; i < this.constraints.length; i ++) {
@@ -207,6 +214,7 @@ export default {
             this.set_chosen_id(0)
         },
         cancel_screen() {
+            this.isScreened = false
             this.screen_list = []
             this.constraints_display = []
             for(let i = 0; i < this.constraints.length; i ++)

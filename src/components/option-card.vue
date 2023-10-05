@@ -6,7 +6,16 @@
         </template> -->
         
         <template class="ant-card-actions" #actions>
-            <setting-outlined key="setting" />
+            <!-- <setting-outlined key="setting" /> -->
+            <a-popconfirm
+                title="Are you sure delete this option ?"
+                ok-text="Yes" cancel-text="No"
+                @confirm="confirm" @cancel="cancel" >
+                <a href="#">
+                    <DeleteOutlined key="delete"/>
+                </a>
+            </a-popconfirm>
+            
             <edit-outlined key="edit" />
             <ellipsis-outlined key="ellipsis" />
         </template>
@@ -36,7 +45,7 @@
 </template>
 
 <script>
-import { SettingOutlined, EditOutlined, EllipsisOutlined } from '@ant-design/icons-vue';
+import { SettingOutlined, EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { defineComponent } from 'vue';
 export default {
     name: "OptionCard",
@@ -45,6 +54,7 @@ export default {
         SettingOutlined,
         EditOutlined,
         EllipsisOutlined,
+        DeleteOutlined,
     },
     data() {
 		return {
@@ -61,6 +71,9 @@ export default {
         }
     },
     methods: {
+        confirm() {
+            this.$emit('deleteOpt', this.item)
+        },
         executeFunctionInChild2(new_item) {
             console.log(new_item)
             this.item = new_item

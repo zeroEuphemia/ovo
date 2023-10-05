@@ -161,6 +161,20 @@ export default {
             sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
         },
 
+        delete_option(removedItem) {
+            const options = this.data.filter(item => item !== removedItem)
+            this.data = options
+            sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
+
+            this.number = this.data.length
+            if(this.number > 0)
+                this.set_chosen_id(0)
+            else {
+                this.chosen_id = 0
+                this.$emit('notifyChild2', undefined)
+            }
+        },
+
         set_chosen_id(index) {
             this.chosen_id = index
             const new_item = this.data[this.chosen_id]

@@ -55,10 +55,18 @@
                             Clean
                         </a-button>
                         <div style="padding-left: 20px;">
-                            <a-button>
-                                <upload-outlined></upload-outlined>
-                                Click to Upload
-                            </a-button>
+                            <a-upload
+                            v-model:file="file"
+                            name="file"
+                            :multiple="false"
+                            action="http://192.168.117.134:80/api/uploader_get_json"
+                            :on-success="upload_back"
+                            @change="handleChangeFile" >
+                                <a-button>
+                                    <upload-outlined></upload-outlined>
+                                    Click to Upload
+                                </a-button>
+                            </a-upload>
                         </div>
                         <div style="padding-left: 20px;">
                             <a-button @click="add_option">
@@ -76,7 +84,9 @@
                             </OptionList>
                         </div>
                         <div class="down-right">
-                            <OptionCard ref="child2"></OptionCard>
+                            <OptionCard ref="child2"
+                            @deleteOpt = "delete_option"
+                            ></OptionCard>
                         </div>
                     </div>
                     
@@ -136,7 +146,6 @@
                         
                     </div>
 
-
                     <div class="down">
                         <div>
                             <ConstraintList ref="conList"
@@ -151,18 +160,18 @@
 
                 <!-- 算法设置 -->
                 <div v-if="state === 3" style="padding-top: 100px">
-                    <a-button type="primary" size="large" @click="test_api">Start</a-button>
+                    <a-button type="primary" size="large" @click="get_testcases">Start</a-button>
                 </div>
 
                 <!-- 结果展示 -->
                 <div v-if="state === 4" class="down-content">
                     <div class="buttons">
-                        <a-button>
+                        <a-button @click="clean_tc">
                             <DeleteOutlined />
                             Clean
                         </a-button>
                         <div style="padding-left: 20px;">
-                            <a-button>
+                            <a-button @click="download_tc">
                                 <DownloadOutlined />
                                 Download
                             </a-button>
@@ -399,7 +408,7 @@ import { defineComponent, ref } from 'vue'
 import { message } from 'ant-design-vue'
 
 import Axios from "axios"
-import { test_api } from "@/utils/api"
+import { test_api, get_testcases } from "@/utils/api"
 
 export default {
 	name: "main",
@@ -416,6 +425,8 @@ export default {
     },
 	data() {
 		return {
+            file: undefined,
+
             indeterminate: false,
             con_checkAll: false,
             con_checkedList: [],
@@ -544,6 +555,28 @@ export default {
                 console.error(error);
             });
         },
+
+        get_testcases() {
+            const now_options = this.options
+            const now_constraints = JSON.parse(sessionStorage.getItem("constraint_list_data"))
+            get_testcases({
+                options: now_options,
+                constraints: now_constraints
+            }).then((response) => {
+                let ret = response.data
+                const testcases = ret
+                console.log(testcases)
+                sessionStorage.setItem("testcases", JSON.stringify(testcases))
+                this.setState(4)
+            }).catch(error => {
+                console.error(error);
+            });
+        },
+
+        download_tc() {
+            this.$refs.tcList.download_tc()
+        },
+
         loadDataFromSessionStorage() {
             // 在组件创建时尝试从 sessionStorage 中加载数据
             const storedData_options = sessionStorage.getItem("main-options")
@@ -561,7 +594,37 @@ export default {
             if(stateDate)
                 this.state = JSON.parse(stateDate)
         },
+
+        clean_tc() {
+            sessionStorage.setItem("testcases", JSON.stringify([]))
+            this.setState(3)
+        },
         
+        handleChangeFile(info) {
+            if (info.file.status !== 'uploading')
+                console.log(info.file, info.fileList)
+            
+            if (info.file.status === 'done')
+                message.success(`${info.file.name} file uploaded successfully`)
+            
+            else if (info.file.status === 'error')
+                message.error(`${info.file.name} file upload failed.`)
+        },
+
+        upload_back(feedback) {
+            const options = feedback.options
+            const constraints = feedback.constraints
+
+            sessionStorage.setItem("main-options", JSON.stringify(options))
+            sessionStorage.setItem("option_list_data", JSON.stringify(options))
+            sessionStorage.setItem("constraint_list_data", JSON.stringify(constraints))
+
+            this.setState(2)
+            // console.log(options)
+            // console.log(constraints)
+            this.file = []
+        },
+
         clean_opt() {
             this.$refs.childComponent.cleanUp()
             sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
@@ -597,6 +660,26 @@ export default {
                 if(this.screen)
                     this.$refs.conList.set_screen(this.screen_list)
             }
+        },
+
+        delete_option(removedItem) {
+            const options = this.options.filter(item => item !== removedItem)
+            this.options = options
+            sessionStorage.setItem("main-options", JSON.stringify(this.options))
+        
+            const select_options = this.select_options.filter(item => item !== removedItem.name)
+            this.select_options = select_options
+
+            this.indeterminate = false
+            this.con_checkAll = false
+            this.con_checkedList = []
+            this.select_value = undefined
+            this.new_con_option = undefined
+            this.cleanSelected()
+
+            this.$refs.childComponent.delete_option(removedItem)
+
+            sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
         },
 
         closeTag(removedTag) {

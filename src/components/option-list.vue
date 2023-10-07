@@ -22,6 +22,9 @@
                     <a-tag v-for="it in item.possible">
                         {{ it }}
                     </a-tag>
+                    <a-tag v-if="item.possible_org.length > 3">
+                        ...
+                    </a-tag>
                 </div>
             </a-list-item>
 

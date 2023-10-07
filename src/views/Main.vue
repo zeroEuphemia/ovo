@@ -148,14 +148,28 @@
 
                     <div class="down">
                         <div>
-                            <ConstraintList ref="conList"
+                            <!-- <ConstraintList ref="conList"
                             @notifyConCard="callFunctionInConCard">
-                            </ConstraintList>
+                            </ConstraintList> -->
+
+                            <ConstraintList2 ref="conList"
+                            @notifyConCard="callFunctionInConCard">
+                            </ConstraintList2>
                         </div>
-                        <div style="width: 500px; padding-left: 50px;">
-                            <ConstraintCard ref="conCard"
-                            @deleteCon="delete_constraint"></ConstraintCard>
+
+                        <div
+                            style="width: 500px; 
+                            padding-left: 50px;">
+
+                            <!-- <ConstraintCard ref="conCard"
+                            @deleteCon="delete_constraint"></ConstraintCard> -->
+                            
+                            <ConstraintCard2 ref="conCard"
+                            @deleteCon="delete_constraint"></ConstraintCard2>
                         </div>
+                        <!-- <div>
+                            <tmpCard></tmpCard>
+                        </div> -->
                     </div>
                 </div>
 
@@ -396,8 +410,13 @@ import Menu from "@/components/menu.vue"
 import OptionList from "@/components/option-list.vue"
 import OptionCard from "@/components/option-card.vue"
 
-import ConstraintList from "@/components/constraint-list.vue"
-import ConstraintCard from "@/components/constraint-card.vue"
+// import ConstraintList from "@/components/constraint-list.vue"
+// import ConstraintCard from "@/components/constraint-card.vue"
+
+import ConstraintList2 from "@/components/constraint-list-2.vue"
+import ConstraintCard2 from "@/components/constraint-card-2.vue"
+
+import tmpCard from "@/components/tmpCard.vue"
 
 import TestcaseList from "@/components/testcase-list.vue"
 import TestcaseCard from "@/components/testcase-card.vue"
@@ -415,7 +434,8 @@ export default {
 	name: "main",
 	components: { 
         Menu, OptionList, OptionCard,
-        ConstraintList, ConstraintCard,
+        // ConstraintList, ConstraintCard,
+        ConstraintList2, ConstraintCard2,
         TestcaseList, TestcaseCard,
         UploadOutlined, DownloadOutlined,
         PlusOutlined, DeleteOutlined,
@@ -423,6 +443,8 @@ export default {
 
         defineComponent, ref,
         message,
+
+        tmpCard,
     },
 	data() {
 		return {
@@ -560,9 +582,14 @@ export default {
         get_testcases() {
             const now_options = this.options
             const now_constraints = JSON.parse(sessionStorage.getItem("constraint_list_data"))
+            
+            let now_constraints_exp = []
+            for (let i = 0; i < now_constraints.length; i ++)
+                now_constraints_exp.push(now_constraints[i].expression)
+
             get_testcases({
                 options: now_options,
-                constraints: now_constraints
+                constraints: now_constraints_exp
             }).then((response) => {
                 let ret = response.data
                 const testcases = ret
@@ -575,7 +602,7 @@ export default {
         },
 
         delete_constraint(removedItem) {
-            // console.log(removedItem)
+            console.log(removedItem)
             this.$refs.conList.delete_constraint(removedItem)
         },
 
@@ -621,6 +648,7 @@ export default {
             const options = feedback.options
             const constraints = feedback.constraints
 
+            this.options = options
             sessionStorage.setItem("main-options", JSON.stringify(options))
             sessionStorage.setItem("option_list_data", JSON.stringify(options))
             sessionStorage.setItem("constraint_list_data", JSON.stringify(constraints))
@@ -968,6 +996,12 @@ export default {
 
 .down-right {
     right: 160px;
+    position: fixed;
+    /* background-color: black; */
+}
+
+.down-right-2 {
+    right: 50px;
     position: fixed;
     /* background-color: black; */
 }

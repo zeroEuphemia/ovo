@@ -1,10 +1,7 @@
 <template>
-    <a-card v-if="item !== undefined" style="width: 300px">
-        
-        <!-- <template #cover>
-            <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-        </template> -->
-        
+    <a-card v-if="item !== undefined" 
+        style="width: 300px; background-color: #ECF2FF;">
+ 
         <template class="ant-card-actions" #actions>
             <!-- <setting-outlined key="setting" /> -->
             <a-popconfirm

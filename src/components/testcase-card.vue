@@ -1,5 +1,6 @@
 <template>
-    <a-list item-layout="horizontal" :data-source="data">
+    <a-list item-layout="horizontal" :data-source="data"
+    style="background-color: #ECF2FF;">
         <template #renderItem="{ item, index }">
             <a-list-item>
                 <a-list-item-meta
@@ -18,9 +19,12 @@
                 </a-list-item-meta>
                 
                 <div class="Tag">
-                    <a-tag>
+                    <!-- <a-tag color="purple" size="large">
                         {{ item.value }}
-                    </a-tag>
+                    </a-tag> -->
+                    <a-button danger>
+                        {{ item.value }}
+                    </a-button>
                 </div>
             </a-list-item>
         </template>

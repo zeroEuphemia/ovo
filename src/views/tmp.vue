@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <!-- <h1>Meow Meow !</h1> -->
+        <h1>Meow Meow !</h1>
     </div>
     <div class="content">
         <Menu></Menu>
@@ -9,15 +9,15 @@
                 <a-steps :current="state - 1">
                     <a-step>
                         <!-- <span slot="title">Finished</span> -->
-                        <template #title>设置选项</template>
+                        <template #title>Set Options</template>
                         <template #description>
                             <span>This is a description.</span>
                         </template>
                     </a-step>
                     <!-- <a-step title="Set Constraints" sub-title="Left 00:00:08" description="This is a description." /> -->
-                    <a-step title="设置约束关系" description="Set Constraints" />
-                    <a-step title="开始生成" description="Set Algorithm" />
-                    <a-step title="查看结果" description="Result" />
+                    <a-step title="Set Constraints" description="This is a description." />
+                    <a-step title="Set Algorithm" description="This is a description." />
+                    <a-step title="Result" description="This is a description." />
                 </a-steps>
 
                 <div class="bread">
@@ -34,23 +34,25 @@
                     <div style="padding-left: 20px;">
                         <a-button type="link" :disabled="state === 1" @click="LastState">
                             <StepBackwardOutlined />
-                            上一步
+                            Last Step
                         </a-button>
                     </div>
 
                     <div>
                         <a-button type="link" :disabled="state === 4" @click="NextState">
                             <StepForwardOutlined />
-                            下一步
+                            Next Step
                         </a-button>
                     </div>
+
+                    
                 </div>
 
                 <div v-if="state === 1" class="down-content">
                     <div class="buttons">
                         <a-button @click="clean_opt">
                             <DeleteOutlined />
-                            重置
+                            Clean
                         </a-button>
                         <div style="padding-left: 20px;">
                             <a-upload
@@ -58,19 +60,18 @@
                             name="file"
                             :multiple="false"
                             action="http://124.71.183.200:5000/api/uploader_get_json"
-                            
                             :on-success="upload_back"
                             @change="handleChangeFile" >
                                 <a-button>
                                     <upload-outlined></upload-outlined>
-                                    上传文件
+                                    Click to Upload
                                 </a-button>
                             </a-upload>
                         </div>
                         <div style="padding-left: 20px;">
                             <a-button @click="add_option">
                                 <PlusOutlined />
-                                添加选项
+                                Add a Option
                             </a-button>
                         </div>
                     </div>
@@ -95,27 +96,25 @@
                     <div class="buttons">
                         <a-button @click="clean_conList">
                             <DeleteOutlined />
-                            重置
+                            Clean
                         </a-button>
                         <div style="padding-left: 20px;">
-                            <a-button @click="Download_Model">
-                                <!-- <upload-outlined></upload-outlined>
-                                上传文件 -->
-                                <DownloadOutlined />
-                                下载模型
+                            <a-button>
+                                <upload-outlined></upload-outlined>
+                                Click to Upload
                             </a-button>
                         </div>
                         <div style="padding-left: 20px;">
                             <a-button @click="add_constraint">
                                 <PlusOutlined />
-                                添加约束
+                                Add a Constraint
                             </a-button>
                         </div>
                     </div>
 
                     <div class="buttons" style="align-items: center;">
                         <a-checkbox v-model:checked="screen" @change="change_screen">
-                            筛选
+                            Screen
                         </a-checkbox>
                         
                         <div style="padding-left: 20px;">
@@ -132,7 +131,7 @@
                             <a-button :disabled = "screen_new === undefined"
                                 @click="add_screen">
                                 <PlusOutlined />
-                                添加
+                                add
                             </a-button>
                         </div>
                     </div>
@@ -154,7 +153,7 @@
                             </ConstraintList> -->
 
                             <ConstraintList2 ref="conList"
-                            @notifyConCard = "callFunctionInConCard">
+                            @notifyConCard="callFunctionInConCard">
                             </ConstraintList2>
                         </div>
 
@@ -176,14 +175,7 @@
 
                 <!-- 算法设置 -->
                 <div v-if="state === 3" style="padding-top: 100px">
-                    <div style="display: flex; flex-direction: column;">
-                        <div v-if="loading" style="padding-bottom: 30px;">
-                            <a-spin size="large" />
-                        </div>
-                        <div>
-                            <a-button type="primary" size="large" @click="get_testcases">Start</a-button>
-                        </div>
-                    </div>
+                    <a-button type="primary" size="large" @click="get_testcases">Start</a-button>
                 </div>
 
                 <!-- 结果展示 -->
@@ -191,26 +183,24 @@
                     <div class="buttons">
                         <a-button @click="clean_tc">
                             <DeleteOutlined />
-                            重置
+                            Clean
                         </a-button>
                         <div style="padding-left: 20px;">
                             <a-button @click="download_tc">
                                 <DownloadOutlined />
-                                下载
+                                Download
                             </a-button>
                         </div>
                     </div>
                     
                     <div class="down">
-                        <!-- <div>
+                        <div>
                             <TestcaseList ref="tcList"
                             @notifyTcCard="callFunctionInTcCard"></TestcaseList>
                         </div>
                         <div style="width: 500px; padding-left: 50px;">
                             <TestcaseCard ref="tcCard"></TestcaseCard>
-                        </div> -->
-
-                        <TestcaseList2 ref="tcList"></TestcaseList2>
+                        </div>
                     </div>
                 </div>
 
@@ -222,33 +212,33 @@
         </div>
     </div>
     
-    <a-modal v-model:open="visible" title="添加选项" @ok="handleOk">
+    <a-modal v-model:open="visible" title="Add a Option" @ok="handleOk">
         <!-- <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p> -->
         <a-form style="padding: 30px">
             
-            <a-form-item label="名称">
+            <a-form-item label="Name">
                 <a-input v-model:value="formState.name" />
             </a-form-item>
 
-            <a-form-item label="类型">
-                <a-select v-model:value="formState.type" placeholder="请选择选项类型">
+            <a-form-item label="Type">
+                <a-select v-model:value="formState.type" placeholder="please select the type">
                     <a-select-option value="Boolean"> Boolean </a-select-option>
                     <a-select-option value="Integer"> Integer </a-select-option>
-                    <!-- <a-select-option value="Float"> Float </a-select-option> -->
+                    <a-select-option value="Float"> Float </a-select-option>
                     <a-select-option value="Category"> Category </a-select-option>
                 </a-select>
             </a-form-item>
 
-            <a-form-item label="描述">
+            <a-form-item label="Description">
                 <a-textarea v-model:value="formState.description"
-                    placeholder=""
+                    placeholder="This is a description."
                     :auto-size="{ minRows: 2, maxRows: 5 }" />
             </a-form-item>
             
             <!-- Category -->
-            <a-form-item v-if="formState.type === 'Category'" label="值域">
+            <a-form-item v-if="formState.type === 'Category'" label="Possible Value">
                 <div class="category-add">
                     <a-input v-model:value="new_possible" />
                     <div style="padding-left: 10px;">
@@ -268,56 +258,151 @@
             <!-- Integer -->
             <a-form-item v-if="formState.type === 'Integer'">
                 <div class="integer-float-value">
-                    <div>最小值: </div>
-                    <a-input-number id="inputNumber" v-model:value="formState.min_value" :min="-10000" :max="10000" />
-                    <div>最大值: </div>
-                    <a-input-number id="inputNumber" v-model:value="formState.max_value" :min="-10000" :max="10000" />
+                    <div>Minimum Value: </div>
+                    <a-input-number id="inputNumber" v-model:value="formState.min_value" :min="-10" :max="10" />
+                    <div>Maximum Value: </div>
+                    <a-input-number id="inputNumber" v-model:value="formState.max_value" :min="-10" :max="10" />
                 </div>
             </a-form-item>
 
             <!-- Float -->
-            <!-- <a-form-item v-if="formState.type === 'Float'">
+            <a-form-item v-if="formState.type === 'Float'">
                 <div class="integer-float-value">
                     <div>Minimum Value: </div>
                     <a-input-number id="inputNumber" v-model:value="formState.min_value" :min="-10" :max="10" :step="0.01"/>
                     <div>Maximum Value: </div>
                     <a-input-number id="inputNumber" v-model:value="formState.max_value" :min="-10" :max="10" :step="0.01"/>
                 </div>
-            </a-form-item> -->
+            </a-form-item>
         </a-form>
     </a-modal>
 
-    <a-drawer title="Basic Drawer" width="500px"
-    placement="right" :closable="false"
-    v-model:open="visible_con" :after-visible-change="afterVisibleChange" >
-        <div class = "drawer">
-            <div class = "drawer-left">
-                <div style="display: flex; flex-direction: row;">
-                    <a-button>
-                        <DeleteOutlined />
-                        重置
-                    </a-button>
-                    <div style="padding-left: 20px">
-                        <a-button @click="notify_tree_add_con">
-                            <PlusOutlined />
-                            确认添加
+    <a-modal v-model:open="visible_con"
+        title="Add a Constraint" @ok="handleOk_con"
+        :bodyStyle="'con-bodyStyle'">
+        <div style="overflow-y: auto; 
+            padding: 0 !important;
+            height: 100%;">
+
+            <div class="add-constraint">
+                <div class="add-constraint-left">
+                    <div>
+                        <a-button :disabled="selected.length === 0"
+                            @click="cleanSelected">
+                            <DeleteOutlined />
+                            Clean
                         </a-button>
                     </div>
+
+                    <a-list item-layout="horizontal" :data-source="selected">
+                        <template #renderItem="{ item, index }">
+                            <a-list-item>
+                                <a-list-item-meta
+                                    :description = item.description>
+                                    <template #title>
+                                        {{ item.name + " ( " + item.type + " ) " }}
+                                    </template>
+
+                                    <template #avatar>
+                                        <!-- <a-avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /> -->
+                                        <a-avatar v-if="item.type === 'Boolean'" class="boolean-avatar">01</a-avatar>
+                                        <a-avatar v-if="item.type === 'Integer'" class="integer-avatar">Z</a-avatar>
+                                        <a-avatar v-if="item.type === 'Float'" class="float-avatar">R</a-avatar>
+                                        <a-avatar v-if="item.type === 'Category'" class="category-avatar">C</a-avatar>
+                                    </template>
+                                </a-list-item-meta>
+                                
+                                <div v-if="item.possible.length === 1">
+                                    <a-tag v-for="it in item.possible">
+                                        {{ it }}
+                                    </a-tag>
+                                </div>
+                                <div v-if="item.possible.length > 1">
+                                    <a-tag> ... </a-tag>
+                                </div>
+                                
+                            </a-list-item>
+                        </template>
+                    </a-list>
                 </div>
-                
-                <div class="drawer-left-down">
-                    <!-- <Tree2 ref = "tree2"
-                    @add_con_node = "add_con_node"
-                    @delete_con_node = "delete_con_node"
-                    @edit_con_node = "edit_con_node">
-                    </Tree2> -->
+
+                <div class="add-constraint-right">
+                    <a-select
+                        show-search
+                        v-model:value="select_value"
+                        :options = "select_options"
+                        placeholder="Select a Option"
+                        style="width: 200px" 
+                        @change="handleChange" >
+                    </a-select>
+
+                    <div v-if="new_con_option != undefined" class="new-con-option">
+                        <a-avatar v-if="new_con_option.type === 'Boolean'" class="boolean-avatar">01</a-avatar>
+                        <a-avatar v-if="new_con_option.type === 'Integer'" class="integer-avatar">Z</a-avatar>
+                        <a-avatar v-if="new_con_option.type === 'Float'" class="float-avatar">R</a-avatar>
+                        <a-avatar v-if="new_con_option.type === 'Category'" class="category-avatar">C</a-avatar>
+                        
+                        <div style="font-size: 16px; font-weight: 500;">
+                            {{ new_con_option.name }}
+                        </div>
+
+                        <div style="font-size: 14px; font-weight: 300;">
+                            {{ new_con_option.type }}
+                        </div>
+                    </div>
+
+                    <div v-if="new_con_option != undefined"
+                        style="padding-left: 20px; padding-top: 10px;">
+                        <a-tag v-for="it in new_con_option.possible_org">
+                            {{ it }}
+                        </a-tag>
+                    </div>
+
+                    <div v-if="new_con_option != undefined" class="Set-Values">
+                        <div style="padding-bottom: 15px;">
+                            Set Values
+                        </div>
+
+                        <!-- <a-checkbox
+                            v-model:checked="checkAll"
+                            :indeterminate="indeterminate"
+                            @change="onCheckAllChange"
+                            style="font-size: 16px;"> 
+                            Check all 
+                        </a-checkbox> -->
+                        
+                        <a-checkbox-group v-if="new_con_option.type === 'Category' || new_con_option.type === 'Boolean'" 
+                            v-model:value="con_checkedList" 
+                            :options="new_con_option.possible_org" 
+                            style="font-size: 16px;" />
+                        
+                        <div v-if="new_con_option.type === 'Integer'">
+                            <div style="padding-bottom: 5px;">Minimum Value: </div>
+                            <a-input-number id="inputNumber" v-model:value="new_con_option.min_value" :min="-10" :max="10" />
+                            <div style="padding-bottom: 5px; padding-top: 5px;">Maximum Value: </div>
+                            <a-input-number id="inputNumber" v-model:value="new_con_option.max_value" :min="-10" :max="10" />
+                        </div>
+
+                        <div v-if="new_con_option.type === 'Float'">
+                            <div style="padding-bottom: 5px;">Minimum Value: </div>
+                            <a-input-number id="inputNumber" v-model:value="new_con_option.min_value" :min="-10" :max="10" :step="0.01" />
+                            <div style="padding-bottom: 5px; padding-top: 5px;">Maximum Value: </div>
+                            <a-input-number id="inputNumber" v-model:value="new_con_option.max_value" :min="-10" :max="10" :step="0.01" />
+                        </div>
+                    </div>
+
+                    <div style="padding-top: 30px">
+                        <a-button :disabled = "new_con_option === undefined"
+                            @click="add_con_opt">
+                            <PlusOutlined />
+                            add
+                        </a-button>
+                    </div>
                     
-                    <Tree3 ref="tree3"
-                    @notify_conList_add="notify_conList_add"></Tree3>
                 </div>
             </div>
         </div>
-    </a-drawer>
+    </a-modal>
 </template>
   
 <script>
@@ -335,7 +420,6 @@ import ConstraintCard2 from "@/components/constraint-card-2.vue"
 import tmpCard from "@/components/tmpCard.vue"
 
 import TestcaseList from "@/components/testcase-list.vue"
-import TestcaseList2 from "@/components/testcase-list-2.vue"
 import TestcaseCard from "@/components/testcase-card.vue"
 
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons-vue'
@@ -345,10 +429,7 @@ import { defineComponent, ref } from 'vue'
 import { message } from 'ant-design-vue'
 
 import Axios from "axios"
-import { test_api, get_testcases, get_constraint_obj } from "@/utils/api"
-
-import Tree2 from "@/components/tree2.vue"
-import Tree3 from "@/components/tree3.vue"
+import { test_api, get_testcases } from "@/utils/api"
 
 export default {
 	name: "main",
@@ -356,8 +437,7 @@ export default {
         Menu, OptionList, OptionCard,
         // ConstraintList, ConstraintCard,
         ConstraintList2, ConstraintCard2,
-        TestcaseList, TestcaseList2, TestcaseCard,
-
+        TestcaseList, TestcaseCard,
         UploadOutlined, DownloadOutlined,
         PlusOutlined, DeleteOutlined,
         StepForwardOutlined, StepBackwardOutlined,
@@ -365,28 +445,51 @@ export default {
         defineComponent, ref,
         message,
 
-        tmpCard, Tree2, Tree3,
+        tmpCard,
     },
 	data() {
 		return {
-
-            loading: false,
-
             file: undefined,
 
+            indeterminate: false,
+            con_checkAll: false,
+            con_checkedList: [],
+            select_value: undefined,
+            new_con_option: undefined,
             visible_con: false,
+            selected: [
+                {
+                    id: 1,
+                    name: "Meow",
+                    type: "Boolean",
+                    description: "Meow Meow Meow",
+                    possible: ["True"],
+                    possible_org: ["True", "False"],
+                    min_value: 0,
+                    max_value: 0,
+                },
+                {
+                    id: 2,
+                    name: "QAQ",
+                    type: "Integer",
+                    description: "This is a description.",
+                    possible: ["-2 ~ 2"],
+                    possible_org: ["-5 ~ 10"],
+                    min_value: 0,
+                    max_value: 0,
+                },
+            ],
             select_options: [
                 // "Meow", "QAQ", "QAQ-Meow", "A"
-                // { value: "Meow", lable: "Meow" },
-                // { value: "QAQ", lable: "QAQ" },
-                // { value: "QAQ-Meow", lable: "QAQ-Meow" },
-                // { value: "A", lable: "A" },
+                { value: "Meow", lable: "Meow" },
+                { value: "QAQ", lable: "QAQ" },
+                { value: "QAQ-Meow", lable: "QAQ-Meow" },
+                { value: "A", lable: "A" },
             ],
 
 
             screen: false,
-            // screen_list: ["Meow", "QAQ"],
-            screen_list: [],
+            screen_list: ["Meow", "QAQ"],
             screen_new: undefined,
             
             visible: false,
@@ -403,46 +506,46 @@ export default {
             new_possible: '',
 
             options: [
-                // {
-                //     id: 1,
-                //     name: "Meow",
-                //     type: "Boolean",
-                //     description: "Meow Meow Meow",
-                //     possible: ["True", "False"],
-                //     possible_org: ["True", "False"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-                // {
-                //     id: 2,
-                //     name: "QAQ",
-                //     type: "Integer",
-                //     description: "This is a description.",
-                //     possible: ["-5 ~ 10"],
-                //     possible_org: ["-5 ~ 10"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-                // {
-                //     id: 3,
-                //     name: "QAQ-Meow",
-                //     type: "Float",
-                //     description: "This is a description Meow.",
-                //     possible: ["(1.0, 55.8)"],
-                //     possible_org: ["(1.0, 55.8)"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-                // {
-                //     id: 4,
-                //     name: "A",
-                //     type: "Category",
-                //     description: "This is NekoPara Meow Meow.",
-                //     possible: ["A-type", "B-type", "..."],
-                //     possible_org: ["A-type", "B-type", "C-type", "D-type"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
+                {
+                    id: 1,
+                    name: "Meow",
+                    type: "Boolean",
+                    description: "Meow Meow Meow",
+                    possible: ["True", "False"],
+                    possible_org: ["True", "False"],
+                    min_value: 0,
+                    max_value: 0,
+                },
+                {
+                    id: 2,
+                    name: "QAQ",
+                    type: "Integer",
+                    description: "This is a description.",
+                    possible: ["-5 ~ 10"],
+                    possible_org: ["-5 ~ 10"],
+                    min_value: 0,
+                    max_value: 0,
+                },
+                {
+                    id: 3,
+                    name: "QAQ-Meow",
+                    type: "Float",
+                    description: "This is a description Meow.",
+                    possible: ["(1.0, 55.8)"],
+                    possible_org: ["(1.0, 55.8)"],
+                    min_value: 0,
+                    max_value: 0,
+                },
+                {
+                    id: 4,
+                    name: "A",
+                    type: "Category",
+                    description: "This is NekoPara Meow Meow.",
+                    possible: ["A-type", "B-type", "..."],
+                    possible_org: ["A-type", "B-type", "C-type", "D-type"],
+                    min_value: 0,
+                    max_value: 0,
+                },
             ],
         }
 	},
@@ -477,13 +580,7 @@ export default {
             });
         },
 
-        Download_Model() {
-            this.$refs.conList.Download_Model()
-        },
-
         get_testcases() {
-            this.loading = true
-
             const now_options = this.options
             const now_constraints = JSON.parse(sessionStorage.getItem("constraint_list_data"))
             
@@ -497,93 +594,13 @@ export default {
                 constraints: now_constraints
             }).then((response) => {
                 let ret = response.data
-                // const testcases = ret
-                // console.log(testcases)
-                // sessionStorage.setItem("testcases", JSON.stringify(testcases))
-                
-                console.log(ret)
-                const columns = ret.columns
-                const data = ret.data
-                console.log(columns)
-                console.log(data)
-                sessionStorage.setItem("testcases_columns", JSON.stringify(columns))
-                sessionStorage.setItem("testcases_data", JSON.stringify(data))
-
-                this.loading = false
+                const testcases = ret
+                console.log(testcases)
+                sessionStorage.setItem("testcases", JSON.stringify(testcases))
                 this.setState(4)
             }).catch(error => {
                 console.error(error);
             });
-        },
-
-        notify_tree_add_con() {
-            this.$refs.tree3.add_con()
-            this.visible_con = false
-        },
-        notify_conList_add(new_con) {
-            // console.log(new_con)
-            // this.$refs.conList.add_constraint(new_con)
-            const options = this.options
-            get_constraint_obj({
-                constraint : new_con,
-                options : options
-            }).then((response) => {
-                let ret = response.data
-
-                const success = ret.success
-                const new_item = ret.new_constraint
-
-                // console.log(new_item)
-
-                if(success === false) {
-                    message.error("添加失败不是合法的表达式")
-                    return
-                }
-                this.$refs.conList.add_constraint(new_item)
-
-            }).catch(error => {
-                console.error(error);
-            });
-
-            // this.setState(2)
-        },
-
-        add_con_node(index_list) {
-            console.log('add', index_list)
-        },
-
-        delete_con_node(index_list) {
-            console.log('delete', index_list)
-            
-            if (index_list.length === 0) {
-                this.new_constraint = []
-            }
-            else if(index_list.length === 1) {
-                this.new_constraint.children.splice(index_list[0], 1)
-            }
-            else if(index_list.length === 2) {
-                this.new_constraint.children[index_list[0]].children.splice(index_list[1], 1)
-            }
-            else if(index_list.length === 3) {
-                let i = index_list[0], j = index_list[1]
-                this.new_constraint.children[i].children[j].splice(index_list[2], 1)
-            }
-            else if(index_list.length === 4) {
-                let i = index_list[0], j = index_list[1], k = index_list[2]
-                this.new_constraint.children[i].children[j].children[k].splice(index_list[3], 1)
-            }
-            else if(index_list.length === 5) {
-                let i = index_list[0], j = index_list[1], k = index_list[2], p = index_list[3]
-                this.new_constraint.children[i].children[j].children[k].children[p].splice(index_list[4], 1)
-            }
-
-            const obj = this.new_constraint
-            this.$refs.tree2.get_item(obj)
-            console.log(this.new_constraint)
-        },
-
-        edit_con_node(index_list) {
-            console.log('edit', index_list)
         },
 
         delete_constraint(removedItem) {
@@ -634,13 +651,6 @@ export default {
             const constraints = feedback.constraints
 
             this.options = options
-            this.select_options = []
-            for (let i = 0; i < this.options.length; i ++)
-                this.select_options.push({
-                    value: this.options[i].name,
-                    lable: this.options[i].name
-                })
-            
             sessionStorage.setItem("main-options", JSON.stringify(options))
             sessionStorage.setItem("option_list_data", JSON.stringify(options))
             sessionStorage.setItem("constraint_list_data", JSON.stringify(constraints))
@@ -696,7 +706,12 @@ export default {
             const select_options = this.select_options.filter(item => item !== removedItem.name)
             this.select_options = select_options
 
-            // this.cleanSelected()
+            this.indeterminate = false
+            this.con_checkAll = false
+            this.con_checkedList = []
+            this.select_value = undefined
+            this.new_con_option = undefined
+            this.cleanSelected()
 
             this.$refs.childComponent.delete_option(removedItem)
 
@@ -711,6 +726,57 @@ export default {
 
             if(this.screen)
                 this.$refs.conList.set_screen(this.screen_list)
+        },
+
+        cleanSelected() {
+            this.selected = []
+        },
+        add_con_opt() {
+            if(this.new_con_option != undefined) {
+
+                for(let i = 0; i < this.selected.length; i ++)
+                    if(this.new_con_option.name === this.selected[i].name) {
+                        message.error('This is an error message')
+                        return
+                    }
+
+                let tmp = JSON.parse(JSON.stringify(this.new_con_option))
+                tmp.possible = []
+                if(this.new_con_option.type === "Category" || this.new_con_option.type === "Boolean") {
+                    for(let i = 0; i < this.con_checkedList.length; i ++)
+                        tmp.possible.push(this.con_checkedList[i])
+                }
+                else if(this.new_con_option.type === "Integer") {
+                    let str = this.new_con_option.min_value.toString() + " ~ " + this.new_con_option.max_value.toString()
+                    tmp.possible.push(str)
+                }
+                else if(this.new_con_option.type === "Float"){
+                    let str = "( " + this.new_con_option.min_value.toString() + " , " + this.new_con_option.max_value.toString() + " )"
+                    tmp.possible.push(str)
+                }
+                this.selected.push(tmp)
+            }
+
+            this.indeterminate = false
+            this.con_checkAll = false
+            this.con_checkedList = []
+            this.select_value = undefined
+            this.new_con_option = undefined
+        },
+        onCheckAllChange(checked) {
+            if(checked) {
+                // "con_checkedList" :options="new_con_option.possible_org"
+                this.con_checkedList = this.new_con_option.possible_org
+            }
+        },
+        handleChange(value) {
+            console.log(value)
+            for(let i = 0; i < this.options.length; i ++)
+                if(this.options[i].name === value) {
+                    this.new_con_option = this.options[i]
+                    break
+                }
+            console.log(this.new_con_option)
         },
 
         addOption(new_option) {
@@ -746,12 +812,23 @@ export default {
 
         add_constraint() {
             this.visible_con = true
-
-            // console.log(this.$refs.tree2)
-            // this.$refs.tree2.test()
-            // this.$refs.tree2.get_item(this.new_constraint)
         },
-        
+        handleOk_con(e) {
+
+            if(this.selected.length === 0) {
+                message.error('This is an error message')
+                return
+            }
+
+            this.$refs.conList.add_constraint(this.selected)
+
+            this.visible_con = false
+            this.new_con_option = undefined
+            this.select_value = undefined
+            this.con_checkedList = []
+            this.con_checkAll = false
+            this.indeterminate = false
+        },
         add_option() {
             this.visible = true
         },
@@ -787,28 +864,6 @@ export default {
 </script>
 
 <style scoped>
-
-.drawer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.drawer-left {
-    display: flex;
-    flex-direction: column;
-    padding-right: 40px;
-}
-
-.drawer-right {
-    /* background-color: blanchedalmond; */
-    width: 360px;
-    padding-right: 30px;
-}
-
-.drawer-left-down {
-    padding-top: 40px;
-}
 
 .bodyStyle {
     width: 1000px !important;
@@ -926,7 +981,6 @@ export default {
 .down-content {
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 .buttons {

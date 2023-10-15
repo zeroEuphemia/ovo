@@ -176,7 +176,7 @@ import { defineComponent } from 'vue'
 import treeTitle from "@/components/tree-title.vue"
 import { SettingOutlined, EditOutlined, EllipsisOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons-vue'
 export default {
-    name: "Tree",
+    name: "Tree2",
     components: {
         treeTitle,
 
@@ -189,24 +189,33 @@ export default {
         defineComponent,
     },
 
-    props: {
-        item: Object,
-        display_button: Boolean
-    },
     data() {
         return {
-            item_: undefined,
-            selectedKeys : "0-0-0"
+            item_: {
+                description: "This is a description",
+                expression: "(((not((Par16!=true)))=>(Par4=false))OR((Par9!=false)=>(not((Par12!=false)))))=>(((not((Par16!=false)))=>(Par16!=false))<=>((not((Par4=true)))AND(not((Par0!=true)))))", 
+                type: "=>", 
+                component: [
+                    { name : 'Par0', type : "Boolean" }, 
+                    { name : 'Par4', type : "Boolean" }, 
+                    { name : 'Par9', type : "Boolean" },
+                    { name : 'Par12', type : "Boolean" },
+                    { name : 'Par16', type : "Boolean" },
+                ],
+                children: [
+                    {"expression": "((not((Par16!=true)))=>(Par4=false))OR((Par9!=false)=>(not((Par12!=false))))", "type": "OR", "children": [{"expression": "(not((Par16!=true)))=>(Par4=false)", "type": "=>", "children": [{"expression": "not((Par16!=true))", "type": "not", "children": [{"expression": "Par16!=true", "type": "!=", "children": []}]}, {"expression": "Par4=false", "type": "=", "children": []}]}, {"expression": "(Par9!=false)=>(not((Par12!=false)))", "type": "=>", "children": [{"expression": "Par9!=false", "type": "!=", "children": []}, {"expression": "not((Par12!=false))", "type": "not", "children": [{"expression": "Par12!=false", "type": "!=", "children": []}]}]}]}, {"expression": "((not((Par16!=false)))=>(Par16!=false))<=>((not((Par4=true)))AND(not((Par0!=true))))", "type": "<=>", "children": [{"expression": "(not((Par16!=false)))=>(Par16!=false)", "type": "=>", "children": [{"expression": "not((Par16!=false))", "type": "not", "children": [{"expression": "Par16!=false", "type": "!=", "children": []}]}, {"expression": "Par16!=false", "type": "!=", "children": []}]}, {"expression": "(not((Par4=true)))AND(not((Par0!=true)))", "type": "AND", "children": [{"expression": "not((Par4=true))", "type": "not", "children": [{"expression": "Par4=true", "type": "=", "children": []}]}, {"expression": "not((Par0!=true))", "type": "not", "children": [{"expression": "Par0!=true", "type": "!=", "children": []}]}]}]}
+                ],
+            },
+            selectedKeys : "0-0-0",
+            display_button : true,
         }
     },
 
-    created() {
-        this.item_ = this.$props.item
-        console.log(this.$props.item)
-        console.log(this.item_)
-    },
-
     methods: {
+
+        test() {
+            console.log('test')
+        },
         
         get_item(new_item) {
             this.item_ = new_item
@@ -218,7 +227,7 @@ export default {
         },
         add_son0() {
             console.log("root")
-            this.$emit('add_con_node', [])
+            this.$emit('add_con_node', undefined)
         },
         add_son1(index) {
             // console.log(index)
@@ -248,12 +257,14 @@ export default {
 
         confirm0() {
             console.log("root")
-            this.$emit('delete_con_node', [])
+            this.$emit('delete_con_node', undefined)
+            this.item_ = undefined
         },
         confirm1(index) {
             // console.log(index)
             const array = [index]
             this.$emit('delete_con_node', array)
+            this.item_.children.splice(index, 1)
         },
         confirm2(index, index1) {
             // console.log(index, index1)

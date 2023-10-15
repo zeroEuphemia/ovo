@@ -1,6 +1,7 @@
 <template>
     <a-card style="width: 400px; background-color: #ECF2FF;">
-        <span style="font-size: 16px; font-weight: 500;">
+
+        <span v-if="item != undefined" style="font-size: 16px; font-weight: 500;">
             {{ item.description }} 
         </span>
         <span style="padding-top: 50px;"></span>
@@ -18,42 +19,52 @@
             <ellipsis-outlined key="ellipsis" />
         </template>
 
-        <div>
+        <div v-if="item != undefined">
             <a-tree show-line=true show-icon=true 
-                :default-expanded-keys="['0-0-0', '0-0-1', '0-0-2']"
-                @select="onSelect" >
+            :default-expanded-keys="['0-0-0', '0-0-1', '0-0-2']"
+            @select="onSelect">
 
                 <a-tree-node key="0-0">
                     <template #title>
-                        <treeTitle :msg="item.type" :expression="item.expression"></treeTitle>
+                        <div style="display: flex; flex-direction : row;">
+                            <treeTitle :msg="item.type" :expression="item.expression"></treeTitle>
+                        </div>
                     </template>
                     
-                    <a-tree-node v-for="(node, index) in item.children" :key="'0-0-' + index.toString()">
+                    <a-tree-node v-for="(node, index) in item.children" 
+                    :key="'0-0-' + index.toString()">
                         <template #title>
-                            <treeTitle :msg="node.type" :expression="node.expression"></treeTitle>
+                            <div style="display: flex; flex-direction : row;">
+                                <treeTitle :msg="node.type" :expression="node.expression"></treeTitle>
+                            </div>
                         </template>
-
                         <a-tree-node v-for="(node1, index1) in node.children" 
                         :key="'0-0-' + index.toString() + '-' + index1.toString()">
                             <template #title>
-                                <treeTitle :msg="node1.type" :expression="node1.expression"></treeTitle>
+                                <div style="display: flex; flex-direction : row;">
+                                    <treeTitle :msg="node1.type" :expression="node1.expression"></treeTitle>
+                                </div>
                             </template>
-
                             <a-tree-node v-for="(node2, index2) in node1.children" 
-                            :key="'0-0-' + index.toString() + '-' + index1.toString() + index2.toString()">
+                            :key="'0-0-' + index.toString() + '-' + index1.toString() + '-' + index2.toString()">
                                 <template #title>
-                                    <treeTitle :msg="node2.type" :expression="node2.expression"></treeTitle>
+                                    <div style="display: flex; flex-direction : row;">
+                                        <treeTitle :msg="node2.type" :expression="node2.expression"></treeTitle>
+                                    </div>
                                 </template>
-
                                 <a-tree-node v-for="(node3, index3) in node2.children" 
-                                :key="'0-0-' + index.toString() + '-' + index1.toString() + index2.toString() + index3.toString()">
+                                :key="'0-0-' + index.toString() + '-' + index1.toString() + '-' + index2.toString() + '-' + index3.toString()">
                                     <template #title>
-                                        <treeTitle :msg="node3.type" :expression="node3.expression"></treeTitle>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="node3.type" :expression="node3.expression"></treeTitle>
+                                        </div>
                                     </template>
                                     <a-tree-node v-for="(node4, index4) in node3.children" 
-                                    :key="'0-0-' + index.toString() + '-' + index1.toString() + index2.toString() + index3.toString() + index4.toString()">
+                                    :key="'0-0-' + index.toString() + '-' + index1.toString() + '-' + index2.toString() + '-' + index3.toString() + '-' + index4.toString()">
                                         <template #title>
-                                            <treeTitle :msg="node4.type" :expression="node4.expression"></treeTitle>
+                                            <div style="display: flex; flex-direction : row;">
+                                                <treeTitle :msg="node4.type" :expression="node4.expression"></treeTitle>
+                                            </div>
                                         </template>
                                     </a-tree-node>
                                 </a-tree-node>
@@ -62,6 +73,10 @@
                     </a-tree-node>
                 </a-tree-node>
             </a-tree>
+        </div>
+
+        <div v-else>
+            <a-empty></a-empty>
         </div>
     </a-card>
 </template>

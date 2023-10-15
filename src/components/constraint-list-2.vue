@@ -13,11 +13,12 @@
                         
                     </a-list-item-meta>
                     <div class="list-right">
-                        <a-avatar-group :max-count="3" :max-style="{ color: '#f56a00', backgroundColor: '#fde3cf' }">
+                        <a-avatar-group :max-count="3" :max-style="{ color: '#f56a00', backgroundColor: '#fde3cf' }"
+                        style="width: 130px;">
                             <optAvatar v-for="it in item.component" :msg="it.type"></optAvatar>
                         </a-avatar-group>
 
-                        <div style="padding-top: 5px; display: flex; flex-direction: row;">
+                        <div style="padding-top: 5px; display: flex; flex-direction: row; width: 130px; ">
                             <div v-for="(it, index) in item.component">
                                 <a-tag v-if="index  < 2"> {{ it.name }} </a-tag>
                             </div>
@@ -39,6 +40,7 @@
 
 <script>
 import optAvatar from "@/components/opt-avatar.vue"
+import { get_constraint_obj, download_model } from "@/utils/api"
 export default {
     name: "ConstraintList2",
     components: {
@@ -51,161 +53,7 @@ export default {
             isScreened: false,
             constraints_display: [],
             constraints: [
-                {
-                    description: "This is a description",
-                    // expression: "((((not (Par7 = true)) OR Par7 = false) AND (Par8 = true OR Par7 = true)) OR (Par2 = true))",
-                    expression: "(((not((Par7=true)))OR(Par7=false))AND((Par8=true)OR(Par7=true)))OR(((not((Par11!=true)))OR(Par0=false))AND((not((Par8!=false)))=>(Par10!=true)))",
-                    type: "OR",
-                    component : [
-                        // ['Par2', 'Par7', 'Par8']
-                        { name : 'Par2', type : "Boolean" }, 
-                        { name : 'Par7', type : "Boolean" }, 
-                        { name : 'Par8', type : "Boolean" },
-                    ],
-                    children: [
-                        {
-                            // ((not (Par7 = true)) OR Par7 = false) 
-                            // AND 
-                            // (Par8 = true OR Par7 = true)
-                            expression: "((not (Par7 = true)) OR Par7 = false) AND (Par8 = true OR Par7 = true)",
-                            type: "AND",
-                            children: [
-                                {
-                                    // (not (Par7 = true)) OR Par7 = false
-                                    expression: "(not (Par7 = true)) OR Par7 = false",
-                                    type: "OR",
-                                    children: [
-                                        {
-                                            expression: "not (Par7 = true)",
-                                            type: "not",
-                                            children: [
-                                                {
-                                                    expression: "Par7 = true",
-                                                    type: "=",
-                                                    children: [],
-                                                }
-                                            ],
-                                        },
-                                        {
-                                            expression: "Par7 = false",
-                                            type: "=",
-                                            children: [],
-                                        }
-                                    ]
-                                },
-                                {
-                                    // (Par8 = true OR Par7 = true)
-                                    expression: "Par8 = true OR Par7 = true",
-                                    type: "OR",
-                                    children: [
-                                        {
-                                            expression: "Par8 = true",
-                                            type: "=",
-                                            children: [],
-                                        },
-                                        {
-                                            expression: "Par7 = true",
-                                            type: "=",
-                                            children: [],
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            // Par2 = true
-                            expression: "Par2 = true",
-                            type: "=",
-                            children: []
-                        }
-                    ]
-                },
-
-                {
-                    description: "This is a description",
-                    expression: "((Par2!=false)AND(not((Par10=true))))<=>((Par8!=false)AND(Par5!=false))", 
-                    type: "<=>", 
-                    component: [
-                        // "Par10", "Par2", "Par5", "Par8"
-                        { name : 'Par2', type : "Boolean" }, 
-                        { name : 'Par5', type : "Boolean" }, 
-                        { name : 'Par8', type : "Boolean" },
-                        { name : 'Par10', type : "Boolean" },
-                    ],
-                    children: [
-                        {
-                            "expression": "(Par2!=false)AND(not((Par10=true)))", 
-                            "type": "AND", 
-                            "children": [
-                                {
-                                    "expression": "Par2!=false", 
-                                    "type": "!=", 
-                                    "children": []
-                                }, 
-                                {
-                                    "expression": "not((Par10=true))", 
-                                    "type": "not", 
-                                    "children": [
-                                        {
-                                            "expression": "Par10=true", 
-                                            "type": "=", 
-                                            "children": []
-                                        }
-                                    ]
-                                }
-                            ]
-                        }, 
-                        {
-                            "expression": "(Par8!=false)AND(Par5!=false)", 
-                            "type": "AND", 
-                            "children": [
-                                {
-                                    "expression": "Par8!=false", 
-                                    "type": "!=", 
-                                    "children": []
-                                }, 
-                                {
-                                    "expression": "Par5!=false", 
-                                    "type": "!=", 
-                                    "children": []
-                                }
-                            ]
-                        }
-                    ]
-                },
-
-                { 
-                    description: "This is a description",
-                    expression: "((not((Par13!=true)))=>(Par16=false))AND((Par15=false)OR(Par1=false))", 
-                    type: "AND",
-                    component: [
-                        // "Par1", "Par13", "Par15", "Par16"
-                        { name : 'Par1', type : "Boolean" }, 
-                        { name : 'Par13', type : "Boolean" }, 
-                        { name : 'Par15', type : "Boolean" },
-                        { name : 'Par16', type : "Boolean" },
-                    ],
-                    children: [
-                        {"expression": "(not((Par13!=true)))=>(Par16=false)", "type": "=>", "children": [{"expression": "not((Par13!=true))", "type": "not", "children": [{"expression": "Par13!=true", "type": "!=", "children": []}]}, {"expression": "Par16=false", "type": "=", "children": []}]}, {"expression": "(Par15=false)OR(Par1=false)", "type": "OR", "children": [{"expression": "Par15=false", "type": "=", "children": []}, {"expression": "Par1=false", "type": "=", "children": []}]}
-                    ], 
-                },
-
-                {
-                    description: "This is a description",
-                    expression: "(((not((Par16!=true)))=>(Par4=false))OR((Par9!=false)=>(not((Par12!=false)))))=>(((not((Par16!=false)))=>(Par16!=false))<=>((not((Par4=true)))AND(not((Par0!=true)))))", 
-                    type: "=>", 
-                    component: [
-                        // "Par0", "Par12", "Par16", "Par4", "Par9"
-                        { name : 'Par0', type : "Boolean" }, 
-                        { name : 'Par4', type : "Boolean" }, 
-                        { name : 'Par9', type : "Boolean" },
-                        { name : 'Par12', type : "Boolean" },
-                        { name : 'Par16', type : "Boolean" },
-                    ],
-                    children: [
-                        {"expression": "((not((Par16!=true)))=>(Par4=false))OR((Par9!=false)=>(not((Par12!=false))))", "type": "OR", "children": [{"expression": "(not((Par16!=true)))=>(Par4=false)", "type": "=>", "children": [{"expression": "not((Par16!=true))", "type": "not", "children": [{"expression": "Par16!=true", "type": "!=", "children": []}]}, {"expression": "Par4=false", "type": "=", "children": []}]}, {"expression": "(Par9!=false)=>(not((Par12!=false)))", "type": "=>", "children": [{"expression": "Par9!=false", "type": "!=", "children": []}, {"expression": "not((Par12!=false))", "type": "not", "children": [{"expression": "Par12!=false", "type": "!=", "children": []}]}]}]}, {"expression": "((not((Par16!=false)))=>(Par16!=false))<=>((not((Par4=true)))AND(not((Par0!=true))))", "type": "<=>", "children": [{"expression": "(not((Par16!=false)))=>(Par16!=false)", "type": "=>", "children": [{"expression": "not((Par16!=false))", "type": "not", "children": [{"expression": "Par16!=false", "type": "!=", "children": []}]}, {"expression": "Par16!=false", "type": "!=", "children": []}]}, {"expression": "(not((Par4=true)))AND(not((Par0!=true)))", "type": "AND", "children": [{"expression": "not((Par4=true))", "type": "not", "children": [{"expression": "Par4=true", "type": "=", "children": []}]}, {"expression": "not((Par0!=true))", "type": "not", "children": [{"expression": "Par0!=true", "type": "!=", "children": []}]}]}]}
-                    ],
-                }
+                
             ]
         }
     },
@@ -235,6 +83,27 @@ export default {
             this.chosen_id = 0
         },
 
+        Download_Model() {
+            const options = JSON.parse(sessionStorage.getItem("option_list_data"))
+            const constraints = this.constraints
+            download_model({
+                options : options,
+                constraints : constraints
+            }).then((response) => {
+                const blob = new Blob([response.data], { type: "text/plain" })
+
+                // 创建一个下载链接
+                const downloadLink = document.createElement('a')
+                downloadLink.href = window.URL.createObjectURL(blob)
+                downloadLink.download = "model-file.txt" // 使用 .xls 扩展名
+                // 模拟用户点击链接以触发下载
+                downloadLink.click()
+
+            }).catch(error => {
+                console.error(error);
+            });
+        },
+
         delete_constraint(removedItem) {
             const constraints = this.constraints.filter(item => item !== removedItem)
             this.constraints = constraints
@@ -262,7 +131,26 @@ export default {
         },
 
         add_constraint(new_constraint) {
+            console.log(new_constraint)
+
+            this.constraints.push(new_constraint)
+            sessionStorage.setItem("constraint_list_data", JSON.stringify(this.constraints))
         
+            if(! this.isScreened)
+                this.constraints_display.push(new_constraint)
+            else {
+                let flag = false
+                for (let i = 0; i < new_constraint.component.length; i ++)
+                    if(screen_list.includes(new_constraint.component[i].name)) {
+                        flag = true; 
+                        break ;
+                    }
+                if(flag)
+                    this.constraints_display.push(new_constraint)
+            }
+
+            if(this.constraints_display.length === 1)
+                this.set_chosen_id(0)
         },
 
         set_screen(screen_list) {

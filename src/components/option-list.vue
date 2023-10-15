@@ -19,12 +19,24 @@
                 </a-list-item-meta>
                 
                 <div class="Tag">
-                    <a-tag v-for="it in item.possible">
+                    <!-- <a-tag v-for="it in item.possible">
                         {{ it }}
                     </a-tag>
                     <a-tag v-if="item.possible_org.length > 3">
                         ...
-                    </a-tag>
+                    </a-tag> -->
+
+                    <div v-for="(it, index) in item.possible_org">
+                        <a-tag v-if="index  < 2"> {{ it }} </a-tag>
+                    </div>
+                    <a-popover v-if="item.possible_org.length > 2">
+                        <template #content>
+                            <div v-for="(it, index) in item.possible_org">
+                                <a-tag v-if="index  >= 2"> {{ it }} </a-tag>
+                            </div>
+                        </template>
+                        <a-tag>...</a-tag>
+                    </a-popover>
                 </div>
             </a-list-item>
 
@@ -45,9 +57,20 @@
                 </a-list-item-meta>
                 
                 <div class="Tag">
-                    <a-tag v-for="it in item.possible">
+                    <!-- <a-tag v-for="it in item.possible">
                         {{ it }}
-                    </a-tag>
+                    </a-tag> -->
+                    <div v-for="(it, index) in item.possible_org">
+                        <a-tag v-if="index  < 2"> {{ it }} </a-tag>
+                    </div>
+                    <a-popover v-if="item.possible_org.length > 2">
+                        <template #content>
+                            <div v-for="(it, index) in item.possible_org">
+                                <a-tag v-if="index  >= 2"> {{ it }} </a-tag>
+                            </div>
+                        </template>
+                        <a-tag>...</a-tag>
+                    </a-popover>
                 </div>
             </a-list-item>
 
@@ -66,48 +89,7 @@ export default {
             chosen_id: 0,
             receivedMessage: {},
             number: 4,
-            data: [
-                {
-                    id: 1,
-                    name: "Meow",
-                    type: "Boolean",
-                    description: "Meow Meow Meow",
-                    possible: ["True", "False"],
-                    possible_org: ["True", "False"],
-                    min_value: 0,
-                    max_value: 0,
-                },
-                {
-                    id: 2,
-                    name: "QAQ",
-                    type: "Integer",
-                    description: "This is a description.",
-                    possible: ["-5 ~ 10"],
-                    possible_org: ["-5 ~ 10"],
-                    min_value: 0,
-                    max_value: 0,
-                },
-                {
-                    id: 3,
-                    name: "QAQ-Meow",
-                    type: "Float",
-                    description: "This is a description Meow.",
-                    possible: ["(1.0, 55.8)"],
-                    possible_org: ["(1.0, 55.8)"],
-                    min_value: 0,
-                    max_value: 0,
-                },
-                {
-                    id: 4,
-                    name: "A",
-                    type: "Category",
-                    description: "This is NekoPara Meow Meow.",
-                    possible: ["A-type", "B-type", "..."],
-                    possible_org: ["A-type", "B-type", "C-type", "D-type"],
-                    min_value: 0,
-                    max_value: 0,
-                },
-            ]
+            data: []
         }
     },
     // watch : {

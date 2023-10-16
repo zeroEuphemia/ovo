@@ -1,5 +1,14 @@
 <template>
-    <a-list item-layout="horizontal" :data-source="data">
+    <div class="checkboxs">
+        <a-checkbox-group 
+        v-model:value="display_type" 
+        name="checkboxgroup" 
+        :options="plainOptions"
+        @change="change_checkbox" />
+    </div>
+    
+    
+    <a-list item-layout="horizontal" :data-source="data_display">
         <template #renderItem="{ item, index }">
 
             <a-list-item v-if="index === chosen_id" class="chosen">
@@ -89,7 +98,10 @@ export default {
             chosen_id: 0,
             receivedMessage: {},
             number: 4,
-            data: []
+            data: [],
+            data_display: [],
+            plainOptions: ["Boolean", "Integer", "Category"],
+            display_type: ["Boolean", "Integer", "Category"],
         }
     },
     // watch : {
@@ -123,7 +135,10 @@ export default {
                 // if(this.number === 0)
                 //     this.$emit('notifyChild2', undefined)
             }
-
+            
+            this.data_display = []
+            for (let i = 0; i < this.data.length; i ++)
+                this.data_display.push(this.data[i])
             /*
             chosen_id: 0,
             receivedMessage: {},
@@ -143,12 +158,17 @@ export default {
             this.receivedMessage = {}
             this.number = 0
             this.data = []
+            this.data_display = []
             sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
         },
 
         delete_option(removedItem) {
             const options = this.data.filter(item => item !== removedItem)
             this.data = options
+
+            const options_display = this.data_display.filter(item => item !== removedItem)
+            this.data_display = options_display
+
             sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
 
             this.number = this.data.length
@@ -160,11 +180,42 @@ export default {
             }
         },
 
+        edit_option(old_option, new_option) {
+        
+            let options = []
+            for (let i = 0; i < this.data.length; i ++) {
+                if(this.data[i] !== old_option)
+                    options.push(this.data[i])
+                else options.push(new_option)
+            }
+            this.data = options
+
+            let options_display = []
+            for (let i = 0; i < this.data_display.length; i ++) {
+                if(this.data_display[i] !== old_option)
+                    options_display.push(this.data_display[i])
+                else options_display.push(new_option)
+            }
+            this.data_display = options_display
+
+            sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
+        },
+
         set_chosen_id(index) {
             this.chosen_id = index
-            const new_item = this.data[this.chosen_id]
+            const new_item = this.data_display[this.chosen_id]
             this.$emit('notifyChild2', new_item)
         },
+
+        change_checkbox() {
+            
+            // console.log(this.display_type)
+            this.data_display = []
+            for(let i = 0; i < this.data.length; i ++)
+                if(this.display_type.includes(this.data[i].type))
+                    this.data_display.push(this.data[i])
+        },
+
         executeFunctionInChild(Rmessage) {
             this.receivedMessage = Rmessage
             console.log(this.receivedMessage)
@@ -237,7 +288,13 @@ export default {
             
             this.number = this.number + 1
             new_data.id = this.number
+
             this.data.push(new_data)
+            // console.log(this.data_display)
+            if(this.display_type.includes(new_data.type))
+                this.data_display.push(new_data)
+            // console.log(this.data_display)
+
             this.$emit('addOption', new_data)
             // sessionStorage.setItem("option_list_data", this.data)
             sessionStorage.setItem("option_list_data", JSON.stringify(this.data))
@@ -247,6 +304,14 @@ export default {
 </script>
 
 <style scoped>
+
+.checkboxs {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    padding-bottom: 20px;
+}
+
 .add-constraint {
     display: flex;
     flex-direction: row;

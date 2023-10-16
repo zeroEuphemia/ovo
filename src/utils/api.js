@@ -17,6 +17,14 @@ export function get_constraint_obj(data) {
     })
 }
 
+export function get_object(data) {
+    return request({
+        url: 'api/get_object',
+        method: 'post',
+        data,
+    })
+}
+
 export function get_testcases(data) {
     return request({
         url: 'api/get_testcases',

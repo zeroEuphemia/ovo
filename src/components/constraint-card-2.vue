@@ -7,15 +7,15 @@
         <span style="padding-top: 50px;"></span>
         <template class="ant-card-actions" #actions>
             <a-popconfirm
-                title="Are you sure delete this option ?"
-                ok-text="Yes" cancel-text="No"
+                title="是否确定删除此约束"
+                ok-text="确定" cancel-text="取消"
                 @confirm="confirm" @cancel="cancel" >
                 <a href="#">
                     <DeleteOutlined key="delete"/>
                 </a>
             </a-popconfirm>
             
-            <edit-outlined key="edit" />
+            <edit-outlined key="edit" @click="edit_constraint" />
             <ellipsis-outlined key="ellipsis" />
         </template>
 
@@ -175,7 +175,10 @@ export default {
         },
         confirm() {
             this.$emit('deleteCon', this.item)
-        }
+        },
+        edit_constraint() {
+
+        },
     },
 }
 </script>

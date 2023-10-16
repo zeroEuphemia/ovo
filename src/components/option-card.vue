@@ -5,16 +5,16 @@
         <template class="ant-card-actions" #actions>
             <!-- <setting-outlined key="setting" /> -->
             <a-popconfirm
-                title="Are you sure delete this option ?"
-                ok-text="Yes" cancel-text="No"
+                title="是否确定删除该选项"
+                ok-text="确定" cancel-text="取消"
                 @confirm="confirm" @cancel="cancel" >
                 <a href="#">
                     <DeleteOutlined key="delete"/>
                 </a>
             </a-popconfirm>
             
-            <edit-outlined key="edit" />
-            <ellipsis-outlined key="ellipsis" />
+            <edit-outlined key="edit" @click="edit_option" />
+            <ellipsis-outlined key="ellipsis" @click="get_detail" />
         </template>
 
         <a-card-meta :title="item.name + ' ( ' + item.type + ' ) '" 
@@ -39,6 +39,70 @@
     <div v-else>
         <a-empty></a-empty>
     </div>
+
+    <a-modal v-model:open="visible" title="编辑选项" @ok="handleOk"
+    cancelText="取消" okText="确定">
+        <!-- <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p> -->
+        <a-form style="padding: 30px">
+            
+            <a-form-item label="名称">
+                <a-input v-model:value="formState.name" />
+            </a-form-item>
+
+            <a-form-item label="类型">
+                <a-select v-model:value="formState.type" placeholder="请选择选项类型">
+                    <a-select-option value="Boolean"> Boolean </a-select-option>
+                    <a-select-option value="Integer"> Integer </a-select-option>
+                    <!-- <a-select-option value="Float"> Float </a-select-option> -->
+                    <a-select-option value="Category"> Category </a-select-option>
+                </a-select>
+            </a-form-item>
+
+            <a-form-item label="描述">
+                <a-textarea v-model:value="formState.description"
+                    placeholder=""
+                    :auto-size="{ minRows: 2, maxRows: 5 }" />
+            </a-form-item>
+            
+            <!-- Category -->
+            <a-form-item v-if="formState.type === 'Category'" label="值域">
+                <div class="category-add">
+                    <a-input v-model:value="new_possible" />
+                    <div style="padding-left: 10px;">
+                        <a-button @click="add_possible">
+                            <PlusOutlined />
+                            添加
+                        </a-button>
+                    </div>
+                </div>
+            </a-form-item>
+            <a-form-item v-if="formState.type === 'Category'">
+                <!-- <a-tag v-for="it in formState.possible">
+                    {{ it }}
+                </a-tag> -->
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div v-for="it in formState.possible" :key="it">
+                        <a-tag closable @close=close_value_Tag(it) >
+                            {{ it }}
+                        </a-tag>
+                    </div>
+                </div>
+            </a-form-item>
+
+            <!-- Integer -->
+            <a-form-item v-if="formState.type === 'Integer'">
+                <div class="integer-float-value">
+                    <div>最小值: </div>
+                    <a-input-number id="inputNumber" v-model:value="formState.min_value" :min="-10000" :max="10000" />
+                    <div>最大值: </div>
+                    <a-input-number id="inputNumber" v-model:value="formState.max_value" :min="-10000" :max="10000" />
+                </div>
+            </a-form-item>
+        </a-form>
+    </a-modal>
+
 </template>
 
 <script>
@@ -65,6 +129,20 @@ export default {
                 min_value: -10,
                 max_value: 10,
             },
+
+            visible: false,
+            visible2: false, 
+            formState: {
+                id: 0,
+                name: '',
+                type: undefined,
+                description: '',
+                possible: [],
+                possible_org: [],
+                max_value: 0,
+                min_value: 0,
+            },
+            new_possible: ''
         }
     },
     methods: {
@@ -74,12 +152,118 @@ export default {
         executeFunctionInChild2(new_item) {
             console.log(new_item)
             this.item = new_item
+            if (new_item !== undefined)
+                this.formState.id = this.item.id
+        },
+
+        edit_option() {
+
+            this.formState.id = this.item.id
+            this.formState.name = this.item.name
+            this.formState.type = this.item.type
+            this.formState.description = this.item.description
+
+            const tmp = []
+            for (let i = 0; i < this.item.possible_org.length; i ++)
+                tmp.push(this.item.possible_org[i])
+
+            this.formState.possible = tmp
+            this.formState.possible_org = tmp
+
+            this.formState.min_value = this.item.min_value
+            this.formState.max_value = this.item.max_value
+
+            this.visible = true
+        },
+
+        add_possible() {
+            if(this.formState.possible.includes(this.new_possible)) {
+                message.error('已添加过同名取值')
+            }
+            else {
+                if(this.new_possible.length > 0) {
+                    this.formState.possible.push(this.new_possible)
+                    this.new_possible = ''
+                }
+            }
+        },
+
+        close_value_Tag(removedTag) {
+            // formState.possible
+            const tags = this.formState.possible.filter(tag => tag !== removedTag)
+            this.formState.possible = tags
+            this.formState.possible_org = tags
+        },
+
+        handleOk(e) {
+            console.log(e)
+            const messagef = this.formState
+
+            if(messagef.name === '') {
+                message.error('名称不能为空')
+                return 
+            }
+            if(messagef.type === undefined) {
+                message.error('请选择类型')
+                return
+            }
+            if(messagef.type === "Category" && messagef.possible.length === 0) {
+                message.error('请至少设置一个值域')
+                return
+            }
+
+            this.visible = false
+
+            if(this.formState.type === "Boolean") {
+                this.formState.possible = ["True", "False"]
+            }
+            else if(this.formState.type === "Integer") {
+                if(this.formState.min_value > this.formState.max_value) {
+                    message.error('最大最小值设置错误')
+                    return
+                }
+                let str = this.formState.min_value.toString() + " ~ " + this.formState.max_value.toString()
+                this.formState.possible = [ str ]
+                this.formState.possible_org = [ str ]
+            }
+
+            this.$emit('editOpt', [this.item, this.formState] )
+
+            const tmp = []
+            for (let i = 0; i < this.formState.possible.length; i ++)
+                tmp.push(this.formState.possible[i])
+
+            this.item.name = this.formState.name
+            this.item.type = this.formState.type
+            this.item.description = this.formState.description
+            
+            this.item.possible_org = tmp
+            this.item.possible = tmp
+
+            this.item.min_value = this.formState.min_value
+            this.item.max_value = this.formState.max_value
+
+            this.new_possible = ''
+            this.formState = {
+                id: this.item.id,
+                name: '',
+                type: undefined,
+                description: '',
+                possible: [],
+                max_value: 0,
+                min_value: 0,
+            }
         },
     }
 };
 </script>
 
 <style>
+.category-add {
+    display: flex;
+    flex-direction: row;
+}
+
 .details {
     width: 100%;
     padding-top: 20px;
@@ -108,4 +292,12 @@ export default {
     color: white;
     font-weight: 600;
 }
+
+.integer-float-value {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
 </style>

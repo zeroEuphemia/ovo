@@ -28,15 +28,16 @@
             </template>
         </a-tree>
 
-        <a-modal v-model:visible="visible" title="新建节点" @ok="handleOk">
-            <div class = "drawer-right">
+        <a-modal v-model:visible="visible" :title="isUpdate ? '修改节点' : '新建节点'" @ok="handleOk"
+        cancelText="取消" okText="确定" >
+            <div v-if="isUpdate === false" class = "drawer-right">
                 <div style="display: flex; flex-direction: row;">
                     <a-textarea v-model:value="value_exp"
                     placeholder="Input"
                     auto-size />
 
                     <div style="padding-left: 15px;">
-                        <a-button> 应用 </a-button>
+                        <a-button @click="exp_to_obj"> 应用 </a-button>
                     </div>
                 </div>
 
@@ -121,7 +122,11 @@
                         <span> Node 2: </span>
                     </div>
 
-                    <div style="padding-top: 20px; font-size: 18px; font-weight: 300;">
+                    <div style="padding-top: 20px; width: 50%;">
+                        <a-input v-model:value = "const_input"></a-input>
+                    </div>
+
+                    <!-- <div style="padding-top: 20px; font-size: 18px; font-weight: 300;">
                         <div style="display: flex; flex-direction: row;">
                             <a-select
                                 show-search
@@ -134,9 +139,9 @@
                                 <a-button @click="handleChange_right"> 应用 </a-button>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
-                    <a-list style="padding-top: 10px;">
+                    <!-- <a-list style="padding-top: 10px;">
                         <a-list-item>
                             <a-list-item-meta
                                 :description = right_opt.description>
@@ -163,7 +168,7 @@
                             </div>
                             
                         </a-list-item>
-                    </a-list>
+                    </a-list> -->
                 </div>
                 
                 <div v-else-if="value_type === 'opt'" >
@@ -224,6 +229,44 @@
                 </div> -->
             </div>
 
+            <div v-else class = "drawer-right">
+                <div style="display: flex; flex-direction: row;">
+                    <a-textarea v-model:value="value_exp"
+                    placeholder="Input"
+                    auto-size />
+
+                    <div style="padding-left: 15px;">
+                        <a-button @click="exp_to_obj"> 应用 </a-button>
+                    </div>
+                </div>
+
+                <div style="padding-top: 20px; font-size: 18px; font-weight: 300;">
+                    <span> 类型: </span>
+                    <div style="padding-top: 15px;">
+                        <a-radio-group v-model:value="value_type" button-style="solid"
+                        style="font-weight: 400;">
+                            <div>
+                                <a-radio-button v-if="value_type === '=>' || value_type === '<=>'" value="=>"> => </a-radio-button>
+                                <a-radio-button v-if="value_type === '=>' || value_type === '<=>'" value="<=>"> {{ "<=>" }} </a-radio-button>
+
+                                <a-radio-button v-if="value_type === 'OR' || value_type === 'AND'" value="OR"> OR </a-radio-button>
+                                <a-radio-button v-if="value_type === 'OR' || value_type === 'AND'" value="AND"> AND </a-radio-button>
+                                
+                                <a-radio-button v-if="value_type === '=' || value_type === '=!'" value="="> = </a-radio-button>
+                                <a-radio-button v-if="value_type === '=' || value_type === '=!'" value="!="> != </a-radio-button>
+                                
+                                <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value=">="> >= </a-radio-button>
+                                <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value="<="> {{ "<=" }} </a-radio-button>
+                                <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value=">"> > </a-radio-button>
+                                <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value="<"> {{ "<" }} </a-radio-button>
+                                
+                                <a-radio-button v-if="value_type === 'opt' || value_type === 'const' || value_type === 'final'" value="opt"> option </a-radio-button>
+                                <a-radio-button v-if="value_type === 'opt' || value_type === 'const' || value_type === 'final'" value="const"> const </a-radio-button>
+                            </div>
+                        </a-radio-group>
+                    </div>
+                </div>
+            </div>
         </a-modal>
         <a-button class="get-btn" type="primary" @click="getTreeData" v-if="treeData.length">获取树的值</a-button>
     </div>
@@ -235,6 +278,7 @@ import { notification } from 'ant-design-vue';
 import { ref, onMounted, onCreated, toRaw } from 'vue'
 import treeTitle from "@/components/tree-title.vue"
 import { message } from 'ant-design-vue'
+import { get_object } from "@/utils/api"
 
 export default {
     name: 'Tree3',
@@ -248,96 +292,7 @@ export default {
     },
     data() {
         return {
-            // treeData: ref([
-            //     {
-            //         description: "This is a description",
-            //         expression: "((((not (Par7 = true)) OR Par7 = false) AND (Par8 = true OR Par7 = true)) OR (Par2 = true))",
-            //         key: 0,
-            //         type: "OR",
-            //         component : [
-            //             // ['Par2', 'Par7', 'Par8']
-            //             { name : 'Par2', type : "Boolean" }, 
-            //             { name : 'Par7', type : "Boolean" }, 
-            //             { name : 'Par8', type : "Boolean" },
-            //         ],
-            //         children: [
-            //             {
-            //                 // ((not (Par7 = true)) OR Par7 = false) 
-            //                 // AND 
-            //                 // (Par8 = true OR Par7 = true)
-            //                 expression: "((not (Par7 = true)) OR Par7 = false) AND (Par8 = true OR Par7 = true)",
-            //                 key: Math.random(),
-            //                 type: "AND",
-            //                 children: [
-            //                     {
-            //                         // (not (Par7 = true)) OR Par7 = false
-            //                         expression: "(not (Par7 = true)) OR Par7 = false",
-            //                         key: Math.random(),
-            //                         type: "OR",
-            //                         children: [
-            //                             {
-            //                                 expression: "not (Par7 = true)",
-            //                                 key: Math.random(),
-            //                                 type: "not",
-            //                                 children: [
-            //                                     {
-            //                                         expression: "Par7 = true",
-            //                                         key: Math.random(),
-            //                                         type: "=",
-            //                                         children: [],
-            //                                     }
-            //                                 ],
-            //                             },
-            //                             {
-            //                                 expression: "Par7 = false",
-            //                                 key: Math.random(),
-            //                                 type: "=",
-            //                                 children: [],
-            //                             }
-            //                         ]
-            //                     },
-            //                     {
-            //                         // (Par8 = true OR Par7 = true)
-            //                         expression: "Par8 = true OR Par7 = true",
-            //                         key: Math.random(),
-            //                         type: "OR",
-            //                         children: [
-            //                             {
-            //                                 expression: "Par8 = true",
-            //                                 key: Math.random(),
-            //                                 type: "=",
-            //                                 children: [],
-            //                             },
-            //                             {
-            //                                 expression: "Par7 = true",
-            //                                 key: Math.random(),
-            //                                 type: "=",
-            //                                 children: [],
-            //                             }
-            //                         ]
-            //                     }
-            //                 ]
-            //             },
-            //             {
-            //                 // Par2 = true
-            //                 expression: "Par2 = true",
-            //                 key: Math.random(),
-            //                 type: "=",
-            //                 children: []
-            //             }
-            //         ]
-            //     },
-            // ]),
-            
-            treeData: ref([
-                // {
-                //     description: "Root",
-                //     expression: "Root",
-                //     key: 0,
-                //     type: "Unknow",
-                //     children: []
-                // }
-            ]),
+            treeData: ref([]),
 
             parentNode: ref({}),
             visible: ref(false),
@@ -352,18 +307,18 @@ export default {
                 description: "Unknown .",
                 possible: ["Unknown"],
             },
-            right_opt: {
-                name: "Unknown",
-                type: "Unknown",
-                description: "Unknown .",
-                possible: ["Unknown"],
-            },
+            // right_opt: {
+            //     name: "Unknown",
+            //     type: "Unknown",
+            //     description: "Unknown .",
+            //     possible: ["Unknown"],
+            // },
 
             options : [],
             select_options : [],
             options_map: {},
             select_value_left: undefined,
-            select_value_right: undefined,
+            // select_value_right: undefined,
             const_input: "",
         };
     },
@@ -375,10 +330,28 @@ export default {
         this.loadDataFromSessionStorage()
     },
     methods: {
+        Reset_New_Con() {
+            this.treeData = ref([])
+            this.parentNode = ref({})
+            this.compName = ref('')
+            this.isUpdate = ref(false)
+
+            this.value_type = undefined
+            this.value_exp = ""
+            this.left_opt = {
+                name: "Unknown",
+                type: "Unknown",
+                description: "Unknown .",
+                possible: ["Unknown"],
+            }
+
+            this.select_value_left = undefined
+            this.const_input = ""
+        },
 
         reset() {
             this.select_value_left = undefined
-            this.select_value_right = undefined
+            // this.select_value_right = undefined
             this.const_input = ""
             this.left_opt = {
                 name: "Unknown",
@@ -386,12 +359,12 @@ export default {
                 description: "Unknown .",
                 possible: ["Unknown"],
             }
-            this.right_opt = {
-                name: "Unknown",
-                type: "Unknown",
-                description: "Unknown .",
-                possible: ["Unknown"],
-            }
+            // this.right_opt = {
+            //     name: "Unknown",
+            //     type: "Unknown",
+            //     description: "Unknown .",
+            //     possible: ["Unknown"],
+            // }
             this.value_type = undefined
             this.value_exp = ""
         },
@@ -421,21 +394,49 @@ export default {
             }
             this.left_opt = this.options_map[this.select_value_left]
         },
-        handleChange_right() {
-            if(this.value_type === "<=" || this.value_type === ">="
-            || this.value_type === "<" || this.value_type === ">") {
-                if (this.options_map[this.select_value_right].type !== "Integer") {
-                    message.error('只能选择 Integer 类型')
-                    return
-                }
-            }
+        // handleChange_right() {
+        //     if(this.value_type === "<=" || this.value_type === ">="
+        //     || this.value_type === "<" || this.value_type === ">") {
+        //         if (this.options_map[this.select_value_right].type !== "Integer") {
+        //             message.error('只能选择 Integer 类型')
+        //             return
+        //         }
+        //     }
 
-            this.right_opt = this.options_map[this.select_value_right]
-        },
+        //     this.right_opt = this.options_map[this.select_value_right]
+        // },
 
         showModal() {
             this.visible = true;
         },
+
+        exp_to_obj() {
+            console.log(this.value_exp)
+            if(this.value_exp === "") {
+                message.error("不能添加空表达式")
+                return 
+            }
+            get_object({
+                expression : this.value_exp
+            }).then((response) => {
+                let ret = response.data
+                
+                const new_node = ret.obj
+                console.log(new_node)
+
+                if (!this.parentNode.expression)
+                    this.treeData.push(new_node)
+                else
+                    this.parentNode.children.push(new_node)
+
+                this.reset()
+                this.visible = false
+            
+            }).catch(error => {
+                console.error(error)
+            });
+        },
+
         handleOk() {
             console.log(this.parentNode.expression)
 
@@ -445,7 +446,8 @@ export default {
             }
             if (this.isUpdate) {
                 Object.assign(this.parentNode.dataRef, { 
-                    expression: this.compName 
+                    // expression: this.compName 
+                    type : this.value_type
                 });
             }
 
@@ -470,14 +472,28 @@ export default {
                 }
                 else if( this.value_type === ">=" || this.value_type === "<="
                 || this.value_type === ">" || this.value_type === "<") {
-                    exp = this.select_value_left + " " + this.value_type + " " + this.select_value_right
+                    exp = this.select_value_left + " " + this.value_type + " " + this.const_input
                     
                     if(this.left_opt.type === "Unknown") {
                         message.error('请选择 Node 1')
                         return
                     }
-                    if(this.right_opt.type === "Unknown") {
-                        message.error('请选择 Node 2')
+                    // if(this.right_opt.type === "Unknown") {
+                    //     message.error('请选择 Node 2')
+                    //     return
+                    // }
+                    if(this.const_input === "") {
+                        message.error('请输入 Node 2')
+                        return
+                    }
+                    let isNum = true
+                    for (let i = 0; i < this.const_input.length; i ++)
+                        if(this.const_input[i] < '0' || this.const_input[i] > '9') {
+                            isNum = false
+                            break
+                        }
+                    if(isNum === false) {
+                        message.error('Node 2只能为数字')
                         return
                     }
 
@@ -489,8 +505,8 @@ export default {
                     }
 
                     let right_son = {
-                        expression: this.select_value_right,
-                        type: "opt",
+                        expression: this.const_input,
+                        type: "const",
                         children: [],
                         key: Math.random() 
                     }
@@ -527,7 +543,7 @@ export default {
                         }
                     }
 
-                    this.parentNode.children.push({ 
+                    this.parentNode.children.push({
                         expression: exp, 
                         type: this.value_type,
                         children: children, 
@@ -566,10 +582,25 @@ export default {
             this.showModal()
         },
         slotModify(nodeData) {
-            this.isUpdate = true;
-            this.parentNode = nodeData;
+            this.isUpdate = true
+            this.parentNode = nodeData
             this.compName = nodeData.dataRef.name
             this.showModal()
+
+            this.value_type = nodeData.type
+            // this.value_exp = nodeData.expression
+
+            // this.value_type = undefined
+            // this.value_exp = ""
+            // this.left_opt = {
+            //     name: "Unknown",
+            //     type: "Unknown",
+            //     description: "Unknown .",
+            //     possible: ["Unknown"],
+            // }
+
+            // this.select_value_left = undefined
+            // this.const_input = ""
         },
         slotDelete(nodeData) {
             this.parentNode = nodeData

@@ -85,6 +85,7 @@
                         <div class="down-right">
                             <OptionCard ref="child2"
                             @deleteOpt = "delete_option"
+                            @editOpt = "edit_option"
                             ></OptionCard>
                         </div>
                     </div>
@@ -123,8 +124,8 @@
                                 show-search
                                 v-model:value="screen_new"
                                 :options = "select_options"
-                                placeholder="Select a Option"
-                                style="width: 100px" >
+                                placeholder="选择已有选项"
+                                style="width: 150px" >
                             </a-select>
                         </div>
                         
@@ -222,7 +223,8 @@
         </div>
     </div>
     
-    <a-modal v-model:open="visible" title="添加选项" @ok="handleOk">
+    <a-modal v-model:open="visible" title="添加选项" @ok="handleOk"
+    cancelText="取消" okText="确定">
         <!-- <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p> -->
@@ -254,15 +256,19 @@
                     <div style="padding-left: 10px;">
                         <a-button @click="add_possible">
                             <PlusOutlined />
-                            add
+                            添加
                         </a-button>
                     </div>
                 </div>
             </a-form-item>
             <a-form-item v-if="formState.type === 'Category'">
-                <a-tag v-for="it in formState.possible">
-                    {{ it }}
-                </a-tag>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div v-for="it in formState.possible" :key="it">
+                        <a-tag closable @close=close_value_Tag(it) >
+                            {{ it }}
+                        </a-tag>
+                    </div>
+                </div>
             </a-form-item>
 
             <!-- Integer -->
@@ -287,16 +293,19 @@
         </a-form>
     </a-modal>
 
-    <a-drawer title="Basic Drawer" width="500px"
+    <a-drawer title="添加约束" width="500px"
     placement="right" :closable="false"
     v-model:open="visible_con" :after-visible-change="afterVisibleChange" >
         <div class = "drawer">
             <div class = "drawer-left">
                 <div style="display: flex; flex-direction: row;">
-                    <a-button>
-                        <DeleteOutlined />
-                        重置
-                    </a-button>
+                    <a-popconfirm title="确定重置吗？" ok-text="确定" cancel-text="取消" @confirm="Reset_New_Con">
+                        <a-button>
+                            <DeleteOutlined />
+                            重置
+                        </a-button>
+                    </a-popconfirm>
+                    
                     <div style="padding-left: 20px">
                         <a-button @click="notify_tree_add_con">
                             <PlusOutlined />
@@ -516,6 +525,10 @@ export default {
             });
         },
 
+        Reset_New_Con() {
+            this.$refs.tree3.Reset_New_Con()
+        },
+
         notify_tree_add_con() {
             this.$refs.tree3.add_con()
             this.visible_con = false
@@ -703,6 +716,35 @@ export default {
             sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
         },
 
+        edit_option(opts) {
+            const old_option = opts[0]
+            const new_option = opts[1]
+
+            console.log(old_option)
+            console.log(new_option)
+
+            let options = []
+            for (let i = 0; i < this.options.length; i ++) {
+                if(this.options[i] !== old_option)
+                    options.push(this.options[i])
+                else options.push(new_option)
+            }
+            this.options = options
+            sessionStorage.setItem("main-options", JSON.stringify(this.options))
+
+            let select_options = []
+            for (let i = 0; i < this.options.length; i ++) {
+                if(this.options[i] !== old_option)
+                    select_options.push(this.options[i].name)
+                else select_options.push(new_option.name)
+            }
+            this.select_options = select_options
+
+            this.$refs.childComponent.edit_option(old_option, new_option)
+
+            sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
+        },
+
         closeTag(removedTag) {
             // const tags = state.tags.filter(tag => tag !== removedTag);
             const tags = this.screen_list.filter(tag => tag !== removedTag)
@@ -711,6 +753,12 @@ export default {
 
             if(this.screen)
                 this.$refs.conList.set_screen(this.screen_list)
+        },
+
+        close_value_Tag(removedTag) {
+            // formState.possible
+            const tags = this.formState.possible.filter(tag => tag !== removedTag)
+            this.formState.possible = tags
         },
 
         addOption(new_option) {
@@ -757,9 +805,23 @@ export default {
         },
         handleOk(e) {
             console.log(e)
+            const messagef = this.formState
+
+            if(messagef.name === '') {
+                message.error('名称不能为空')
+                return 
+            }
+            if(messagef.type === undefined) {
+                message.error('请选择类型')
+                return
+            }
+            if(messagef.type === "Category" && messagef.possible.length === 0) {
+                message.error('请至少设置一个值域')
+                return
+            }
+
             this.visible = false
-            const message = this.formState
-            this.$refs.childComponent.executeFunctionInChild(message)
+            this.$refs.childComponent.executeFunctionInChild(messagef)
 
             this.new_possible = ''
             this.formState = {
@@ -770,10 +832,11 @@ export default {
                 max_value: 0,
                 min_value: 0,
             }
+            
         },
         add_possible() {
             if(this.formState.possible.includes(this.new_possible)) {
-                message.error('This is an error message')
+                message.error('已添加过同名取值')
             }
             else {
                 if(this.new_possible.length > 0) {

@@ -108,6 +108,7 @@
 <script>
 import { SettingOutlined, EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import { defineComponent } from 'vue';
+import { message } from 'ant-design-vue'
 export default {
     name: "OptionCard",
     components: {
@@ -116,6 +117,8 @@ export default {
         EditOutlined,
         EllipsisOutlined,
         DeleteOutlined,
+
+        message,
     },
     data() {
 		return {
@@ -182,6 +185,10 @@ export default {
             }
             else {
                 if(this.new_possible.length > 0) {
+                    if(this.new_possible[0] >= '0' && this.new_possible[0] <= '9') {
+                        message.error('首字符不能为数字')
+                        return
+                    }
                     this.formState.possible.push(this.new_possible)
                     this.new_possible = ''
                 }

@@ -41,6 +41,7 @@
 <script>
 import optAvatar from "@/components/opt-avatar.vue"
 import { get_constraint_obj, download_model } from "@/utils/api"
+import { ref } from 'vue'
 export default {
     name: "ConstraintList2",
     components: {
@@ -51,10 +52,8 @@ export default {
             chosen_id: 0,
             screen_list: [],
             isScreened: false,
-            constraints_display: [],
-            constraints: [
-                
-            ]
+            constraints_display: ref([]),
+            constraints: ref([])
         }
     },
     mounted() {
@@ -118,6 +117,33 @@ export default {
                 for(let i = 0; i < this.constraints.length; i ++)
                     this.constraints_display.push(this.constraints[i])
             }
+        },
+
+        edit_con(old_constraint, new_constraint) {
+            const constraints = []
+            for(let i = 0; i < this.constraints.length; i ++) {
+                if(this.constraints[i].key === old_constraint.key)
+                    constraints.push(new_constraint)
+                else constraints.push(this.constraints[i])    
+            }
+            this.constraints = constraints
+
+            // console.log(this.constraints_display[this.chosen_id].expression)
+            // console.log(old_constraint.expression)
+            // console.log(this.constraints_display[this.chosen_id] === old_constraint)
+
+            const constraints_display = []
+            for(let i = 0; i < this.constraints_display.length; i ++) {
+                if(this.constraints_display[i].key === old_constraint.key)
+                    constraints_display.push(new_constraint)
+                else constraints_display.push(this.constraints_display[i])    
+            }
+            this.constraints_display = constraints_display
+            
+            // console.log(this.constraints_display[this.chosen_id].expression)
+            this.set_chosen_id(this.chosen_id)
+
+            sessionStorage.setItem("constraint_list_data", JSON.stringify(this.constraints))
         },
 
         cleanUp() {

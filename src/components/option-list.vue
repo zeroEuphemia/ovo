@@ -214,6 +214,7 @@ export default {
             for(let i = 0; i < this.data.length; i ++)
                 if(this.display_type.includes(this.data[i].type))
                     this.data_display.push(this.data[i])
+            this.set_chosen_id(0)
         },
 
         executeFunctionInChild(Rmessage) {

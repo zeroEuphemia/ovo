@@ -1,5 +1,16 @@
 <template>
     <div>
+        <div class="des">
+            <a-form>
+                <a-form-item label="描述">
+                    <a-textarea v-model:value="description"
+                    placeholder="description" 
+                    :auto-size="{ minRows: 2, maxRows: 5 }" 
+                    style="width: 400px;"/>
+                </a-form-item>
+            </a-form>
+        </div>
+
         <a-button type="primary" @click="addComp" v-if="!treeData.length">添加根节点</a-button>
         <a-tree v-if="treeData && treeData.length > 0" :autoExpandParent="true" :tree-data="treeData"
             :defaultExpandAll="true" showLine blockNode>
@@ -252,8 +263,8 @@
                                 <a-radio-button v-if="value_type === 'OR' || value_type === 'AND'" value="OR"> OR </a-radio-button>
                                 <a-radio-button v-if="value_type === 'OR' || value_type === 'AND'" value="AND"> AND </a-radio-button>
                                 
-                                <a-radio-button v-if="value_type === '=' || value_type === '=!'" value="="> = </a-radio-button>
-                                <a-radio-button v-if="value_type === '=' || value_type === '=!'" value="!="> != </a-radio-button>
+                                <a-radio-button v-if="value_type === '=' || value_type === '!='" value="="> = </a-radio-button>
+                                <a-radio-button v-if="value_type === '=' || value_type === '!='" value="!="> != </a-radio-button>
                                 
                                 <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value=">="> >= </a-radio-button>
                                 <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value="<="> {{ "<=" }} </a-radio-button>
@@ -292,6 +303,10 @@ export default {
     },
     data() {
         return {
+            description: "",
+            origin_item: undefined,
+            isEdit: false,
+
             treeData: ref([]),
 
             parentNode: ref({}),
@@ -328,8 +343,23 @@ export default {
     created() {
         // 在组件创建时加载数据
         this.loadDataFromSessionStorage()
+        this.isEdit = false
     },
     methods: {
+        set_tree_value(item) {
+            this.isEdit = false
+            const item_str = JSON.stringify(item)
+            this.Reset_New_Con()
+            console.log(this.treeData)
+            console.log(this.isEdit)
+            this.description = item.description
+            this.treeData.push(JSON.parse(item_str))
+
+            // /JSON.stringify和JSON.parse
+            this.isEdit = true
+            this.origin_item = JSON.stringify(item)
+        },
+
         Reset_New_Con() {
             this.treeData = ref([])
             this.parentNode = ref({})
@@ -347,6 +377,14 @@ export default {
 
             this.select_value_left = undefined
             this.const_input = ""
+
+            if(this.isEdit) {
+                this.description = JSON.parse(this.origin_item).description
+                this.treeData.push(JSON.parse(this.origin_item))
+            }
+            else {
+                this.origin_item = undefined
+            }
         },
 
         reset() {
@@ -367,6 +405,8 @@ export default {
             // }
             this.value_type = undefined
             this.value_exp = ""
+            
+            this.description = ""
         },
 
         loadDataFromSessionStorage() {
@@ -446,7 +486,8 @@ export default {
             }
             if (this.isUpdate) {
                 Object.assign(this.parentNode.dataRef, { 
-                    // expression: this.compName 
+                    // expression: this.compName
+                    expression : this.value_type,
                     type : this.value_type
                 });
             }
@@ -588,6 +629,7 @@ export default {
             this.showModal()
 
             this.value_type = nodeData.type
+            // console.log(this.value_type)
             // this.value_exp = nodeData.expression
 
             // this.value_type = undefined
@@ -648,24 +690,42 @@ export default {
             this.$emit('notify_conList_add', this.treeData[0])
             // console.log(this.treeData[0])
         },
+
+        edit_con() {
+            if(! this.treeData.length) {
+                message.error('不能修改为空指令')
+                return
+            }
+            let args = []
+            // console.log(JSON.parse(this.origin_item))
+            args.push(JSON.parse(this.origin_item))
+            console.log(this.treeData[0].expression)
+            args.push(this.treeData[0])
+            this.$emit('notify_conList_edit', args)
+        },
     },
 };
 
 </script>
 
 <style scoped>
-    header {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        font-weight: 600;
-    }
-
-    main {
-        margin: 100px 400px;
-    }
-
-    .get-btn {
-        margin-top: 50px;
-    }
+.des {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 30px;
+    /* width: 500px;
+    background-color: black; */
+}
+header {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-weight: 600;
+}
+main {
+    margin: 100px 400px;
+}
+.get-btn {
+    margin-top: 50px;
+}
 </style>

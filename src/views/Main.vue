@@ -167,7 +167,8 @@
                             @deleteCon="delete_constraint"></ConstraintCard> -->
                             
                             <ConstraintCard2 ref="conCard"
-                            @deleteCon="delete_constraint"></ConstraintCard2>
+                            @deleteCon="delete_constraint"
+                            @editCon="edit_constraint"></ConstraintCard2>
                         </div>
                         <!-- <div>
                             <tmpCard></tmpCard>
@@ -293,7 +294,7 @@
         </a-form>
     </a-modal>
 
-    <a-drawer title="添加约束" width="500px"
+    <a-drawer :title="isUpdate === true ? '修改约束' : '添加约束'" width="500px"
     placement="right" :closable="false"
     v-model:open="visible_con" :after-visible-change="afterVisibleChange" >
         <div class = "drawer">
@@ -309,7 +310,7 @@
                     <div style="padding-left: 20px">
                         <a-button @click="notify_tree_add_con">
                             <PlusOutlined />
-                            确认添加
+                            {{ isUpdate === true ? '确认修改' : '确认添加' }}
                         </a-button>
                     </div>
                 </div>
@@ -322,7 +323,8 @@
                     </Tree2> -->
                     
                     <Tree3 ref="tree3"
-                    @notify_conList_add="notify_conList_add"></Tree3>
+                    @notify_conList_add="notify_conList_add"
+                    @notify_conList_edit="notify_conList_edit"></Tree3>
                 </div>
             </div>
         </div>
@@ -383,6 +385,7 @@ export default {
 
             file: undefined,
 
+            isUpdate: false,
             visible_con: false,
             select_options: [
                 // "Meow", "QAQ", "QAQ-Meow", "A"
@@ -411,48 +414,9 @@ export default {
             },
             new_possible: '',
 
-            options: [
-                // {
-                //     id: 1,
-                //     name: "Meow",
-                //     type: "Boolean",
-                //     description: "Meow Meow Meow",
-                //     possible: ["True", "False"],
-                //     possible_org: ["True", "False"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-                // {
-                //     id: 2,
-                //     name: "QAQ",
-                //     type: "Integer",
-                //     description: "This is a description.",
-                //     possible: ["-5 ~ 10"],
-                //     possible_org: ["-5 ~ 10"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-                // {
-                //     id: 3,
-                //     name: "QAQ-Meow",
-                //     type: "Float",
-                //     description: "This is a description Meow.",
-                //     possible: ["(1.0, 55.8)"],
-                //     possible_org: ["(1.0, 55.8)"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-                // {
-                //     id: 4,
-                //     name: "A",
-                //     type: "Category",
-                //     description: "This is NekoPara Meow Meow.",
-                //     possible: ["A-type", "B-type", "..."],
-                //     possible_org: ["A-type", "B-type", "C-type", "D-type"],
-                //     min_value: 0,
-                //     max_value: 0,
-                // },
-            ],
+            options: [],
+
+            tree_node_data: undefined,
         }
 	},
     watch: {
@@ -530,8 +494,15 @@ export default {
         },
 
         notify_tree_add_con() {
-            this.$refs.tree3.add_con()
-            this.visible_con = false
+            if(this.isUpdate) {
+                this.$refs.tree3.edit_con()
+                this.visible_con = false
+                this.isUpdate = false
+            }
+            else {
+                this.$refs.tree3.add_con()
+                this.visible_con = false
+            }
         },
         notify_conList_add(new_con) {
             // console.log(new_con)
@@ -602,6 +573,18 @@ export default {
         delete_constraint(removedItem) {
             console.log(removedItem)
             this.$refs.conList.delete_constraint(removedItem)
+        },
+
+        set_tree_value() {
+            console.log(this.$refs.tree3)
+            this.$refs.tree3.set_tree_value(this.tree_node_data)
+        },
+        edit_constraint(item) {
+            this.isUpdate = true
+            this.visible_con = true
+
+            this.tree_node_data = item
+            setTimeout(this.set_tree_value, 100)
         },
 
         download_tc() {
@@ -716,12 +699,39 @@ export default {
             sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
         },
 
+        notify_conList_edit(Args) {
+            // console.log(Args)
+            const old_constraint = Args[0]
+            const new_constraint = Args[1]
+
+            const options = this.options
+            get_constraint_obj({
+                constraint : new_constraint,
+                options : options
+            }).then((response) => {
+                let ret = response.data
+
+                const success = ret.success
+                const new_constraint_std = ret.new_constraint
+                console.log(new_constraint_std.expression)
+                if(success === false) {
+                    message.error("修改失败不是合法的表达式")
+                    return
+                }
+                this.$refs.conList.edit_con(old_constraint, new_constraint_std)
+
+            }).catch(error => {
+                // console.error(error);
+                message.error("修改失败不是合法的表达式")
+            });
+        },
+
         edit_option(opts) {
             const old_option = opts[0]
             const new_option = opts[1]
 
-            console.log(old_option)
-            console.log(new_option)
+            // console.log(old_option)
+            // console.log(new_option)
 
             let options = []
             for (let i = 0; i < this.options.length; i ++) {
@@ -837,13 +847,18 @@ export default {
         add_possible() {
             if(this.formState.possible.includes(this.new_possible)) {
                 message.error('已添加过同名取值')
+                return 
             }
-            else {
-                if(this.new_possible.length > 0) {
-                    this.formState.possible.push(this.new_possible)
-                    this.new_possible = ''
+
+            if(this.new_possible.length > 0) {
+                if(this.new_possible[0] >= '0' && this.new_possible[0] <= '9') {
+                    message.error('首字符不能为数字')
+                    return
                 }
+                this.formState.possible.push(this.new_possible)
+                this.new_possible = ''
             }
+            
         },
     },
 }
@@ -870,7 +885,7 @@ export default {
 }
 
 .drawer-left-down {
-    padding-top: 40px;
+    padding-top: 30px;
 }
 
 .bodyStyle {

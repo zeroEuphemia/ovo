@@ -177,7 +177,7 @@ export default {
             this.$emit('deleteCon', this.item)
         },
         edit_constraint() {
-
+            this.$emit('editCon', this.item)
         },
     },
 }

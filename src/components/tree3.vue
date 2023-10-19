@@ -339,19 +339,18 @@ export default {
     },
     mounted() {
         // Your mounted logic here
+        this.isEdit = false
+        this.Reset_New_Con()
     },
     created() {
         // 在组件创建时加载数据
         this.loadDataFromSessionStorage()
-        this.isEdit = false
     },
     methods: {
         set_tree_value(item) {
             this.isEdit = false
             const item_str = JSON.stringify(item)
             this.Reset_New_Con()
-            console.log(this.treeData)
-            console.log(this.isEdit)
             this.description = item.description
             this.treeData.push(JSON.parse(item_str))
 
@@ -361,8 +360,13 @@ export default {
         },
 
         Reset_New_Con() {
+            // console.log("Reset_New_Con")
+            // console.log(this.isEdit)
+            // this.treeData = JSON.parse(JSON.stringify([]))
             this.treeData = ref([])
-            this.parentNode = ref({})
+            // console.log(this.treeData.length)
+            // console.log(this.treeData)
+            this.parentNode = JSON.parse(JSON.stringify({}))
             this.compName = ref('')
             this.isUpdate = ref(false)
 
@@ -377,6 +381,7 @@ export default {
 
             this.select_value_left = undefined
             this.const_input = ""
+            this.description = ""
 
             if(this.isEdit) {
                 this.description = JSON.parse(this.origin_item).description
@@ -405,8 +410,6 @@ export default {
             // }
             this.value_type = undefined
             this.value_exp = ""
-            
-            this.description = ""
         },
 
         loadDataFromSessionStorage() {
@@ -462,12 +465,32 @@ export default {
                 let ret = response.data
                 
                 const new_node = ret.obj
+                // console.log("des: ")
+                // console.log(this.description)
+                if(this.description !== undefined && this.description.length !== "")
+                    new_node.description = this.description
                 console.log(new_node)
 
-                if (!this.parentNode.expression)
-                    this.treeData.push(new_node)
-                else
-                    this.parentNode.children.push(new_node)
+                if(this.isUpdate) {
+                    if (!this.parentNode.expression) {
+                        const tmp_isedit = this.isEdit
+                        this.isEdit = false
+                        this.Reset_New_Con()
+                        this.isEdit = tmp_isedit
+
+                        this.treeData.push(new_node)
+                    }
+                    else
+                        Object.assign(this.parentNode.dataRef, new_node)
+                }
+                
+                else {
+                    if (!this.parentNode.expression)
+                        this.treeData.push(new_node)
+                    else
+                        this.parentNode.children.push(new_node)
+                }
+                
 
                 this.reset()
                 this.visible = false
@@ -485,7 +508,7 @@ export default {
                 return
             }
             if (this.isUpdate) {
-                Object.assign(this.parentNode.dataRef, { 
+                Object.assign(this.parentNode.dataRef, {
                     // expression: this.compName
                     expression : this.value_type,
                     type : this.value_type
@@ -687,7 +710,14 @@ export default {
                 message.error('不能添加空指令')
                 return
             }
-            this.$emit('notify_conList_add', this.treeData[0])
+
+            let args = []
+            args.push(this.treeData[0])
+            args.push(this.description)
+            this.$emit('notify_conList_add', args)
+
+            this.isEdit = false
+            this.Reset_New_Con()
             // console.log(this.treeData[0])
         },
 
@@ -696,12 +726,18 @@ export default {
                 message.error('不能修改为空指令')
                 return
             }
+
             let args = []
             // console.log(JSON.parse(this.origin_item))
             args.push(JSON.parse(this.origin_item))
             console.log(this.treeData[0].expression)
             args.push(this.treeData[0])
+            
+            args.push(this.description)
             this.$emit('notify_conList_edit', args)
+
+            this.isEdit = false
+            this.Reset_New_Con()
         },
     },
 };

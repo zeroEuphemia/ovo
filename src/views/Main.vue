@@ -159,9 +159,7 @@
                             </ConstraintList2>
                         </div>
 
-                        <div
-                            style="width: 500px; 
-                            padding-left: 50px;">
+                        <div class="conCard">
 
                             <!-- <ConstraintCard ref="conCard"
                             @deleteCon="delete_constraint"></ConstraintCard> -->
@@ -295,7 +293,7 @@
     </a-modal>
 
     <a-drawer :title="isUpdate === true ? '修改约束' : '添加约束'" width="500px"
-    placement="right" :closable="false"
+    placement="right" :closable="false" :destroyOnClose="true" @close="close_drawer"
     v-model:open="visible_con" :after-visible-change="afterVisibleChange" >
         <div class = "drawer">
             <div class = "drawer-left">
@@ -387,13 +385,7 @@ export default {
 
             isUpdate: false,
             visible_con: false,
-            select_options: [
-                // "Meow", "QAQ", "QAQ-Meow", "A"
-                // { value: "Meow", lable: "Meow" },
-                // { value: "QAQ", lable: "QAQ" },
-                // { value: "QAQ-Meow", lable: "QAQ-Meow" },
-                // { value: "A", lable: "A" },
-            ],
+            select_options: [],
 
 
             screen: false,
@@ -434,6 +426,10 @@ export default {
         this.loadDataFromSessionStorage()
     },
     methods: {
+        close_drawer() {
+            this.isUpdate = false
+        },
+
         test_api() {
             console.log("test api")
             const now_options = this.options
@@ -504,7 +500,11 @@ export default {
                 this.visible_con = false
             }
         },
-        notify_conList_add(new_con) {
+        notify_conList_add(Args) {
+
+            const new_con = Args[0]
+            const description = Args[1]
+
             // console.log(new_con)
             // this.$refs.conList.add_constraint(new_con)
             const options = this.options
@@ -516,7 +516,8 @@ export default {
 
                 const success = ret.success
                 const new_item = ret.new_constraint
-
+                if(description !== undefined && description.length !== "")
+                    new_item.description = description
                 // console.log(new_item)
 
                 if(success === false) {
@@ -649,6 +650,16 @@ export default {
 
         clean_opt() {
             this.$refs.childComponent.cleanUp()
+            
+            this.options = []
+
+            this.select_options = []
+            this.screen = false
+            this.screen_list = []
+            this.screen_new = undefined
+            
+            sessionStorage.setItem("main-options", JSON.stringify([]))
+            sessionStorage.setItem("option_list_data", JSON.stringify([]))
             sessionStorage.setItem("constraint_list_data", JSON.stringify([]))
             // console.log(this.$refs.conList)
         },
@@ -700,9 +711,10 @@ export default {
         },
 
         notify_conList_edit(Args) {
-            // console.log(Args)
+            console.log(Args)
             const old_constraint = Args[0]
             const new_constraint = Args[1]
+            const description = Args[2]
 
             const options = this.options
             get_constraint_obj({
@@ -713,6 +725,8 @@ export default {
 
                 const success = ret.success
                 const new_constraint_std = ret.new_constraint
+                new_constraint_std.description = description
+
                 console.log(new_constraint_std.expression)
                 if(success === false) {
                     message.error("修改失败不是合法的表达式")
@@ -1035,5 +1049,16 @@ export default {
     right: 50px;
     position: fixed;
     /* background-color: black; */
+}
+
+.conCard {
+    padding-left: 50px;
+    width: 500px; 
+
+    /* right: 0px;
+    bottom: 20px; 
+    max-height: 700px;
+    overflow-y: auto;
+    position: fixed; */
 }
 </style>

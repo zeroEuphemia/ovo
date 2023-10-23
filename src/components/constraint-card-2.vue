@@ -1,5 +1,5 @@
 <template>
-    <a-card style="width: 400px; background-color: #ECF2FF;">
+    <a-card style="width: 400px; background-color: #f2f6ff;">
 
         <span v-if="item != undefined" style="font-size: 16px; font-weight: 500;">
             {{ item.description }} 

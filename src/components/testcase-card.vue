@@ -1,6 +1,6 @@
 <template>
     <a-list item-layout="horizontal" :data-source="data"
-    style="background-color: #ECF2FF;">
+    style="background-color: #f2f6ff;">
         <template #renderItem="{ item, index }">
             <a-list-item>
                 <a-list-item-meta

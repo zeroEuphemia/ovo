@@ -1,6 +1,6 @@
 <template>
     <a-card v-if="item !== undefined" 
-        style="width: 300px; background-color: #ECF2FF;">
+        style="width: 300px; background-color: #f2f6ff;">
  
         <template class="ant-card-actions" #actions>
             <!-- <setting-outlined key="setting" /> -->

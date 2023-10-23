@@ -1,6 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  transpileDependencies: true
+  transpileDependencies: true,
+  publicPath: './'
 })
 
 // module.exports = {
@@ -9,4 +10,4 @@ module.exports = defineConfig({
 //     assetsDir: 'static', // 静态资源目录 (js, css, img, fonts)
 //     productionSourceMap: false, // 生产环境不生成 source map
 // }
-  
+

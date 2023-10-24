@@ -270,7 +270,7 @@
             <a-divider />
             <h3> 选项列表 </h3>
             <div class="text">
-                在选项列表中可以根据选项的类型对选项进行筛选，可以查看选中的选项的详细信息，并进行修改。
+                在选项列表中可以根据选项的类型对选项进行筛选，可以查看选中的选项的详细信息，并进行编辑或删除。
             </div>
 
             <div>
@@ -405,7 +405,7 @@ export default {
     },
     data() {
         return {
-            activeKey: ref([]),
+            activeKey: ref(["1"]),
             text: "Test Meow",
 
             Option: [

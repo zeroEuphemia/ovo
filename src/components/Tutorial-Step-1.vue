@@ -47,14 +47,14 @@
                         <div class="option-form">
                             <a-form style="padding-right: 30px">
                                 <a-form-item label="名称">
-                                    <a-input v-model:value="Option[0].name" disabled/>
+                                    <a-input :value="Option[0].name" />
                                 </a-form-item>
                                 <a-form-item label="类型">
-                                    <a-input v-model:value="Option[0].type" disabled/>
+                                    <a-input :value="Option[0].type" />
                                 </a-form-item>
                                 <a-form-item label="描述">
-                                    <a-textarea v-model:value="Option[0].description"
-                                        placeholder="" disabled
+                                    <a-textarea :value="Option[0].description"
+                                        placeholder=""
                                         :auto-size="{ minRows: 2, maxRows: 5 }" />
                                 </a-form-item>
                             </a-form>
@@ -120,14 +120,14 @@
                         <div class="option-form">
                             <a-form style="padding-right: 30px">
                                 <a-form-item label="名称">
-                                    <a-input v-model:value="Option_int[0].name" disabled/>
+                                    <a-input :value="Option_int[0].name" />
                                 </a-form-item>
                                 <a-form-item label="类型">
-                                    <a-input v-model:value="Option_int[0].type" disabled/>
+                                    <a-input :value="Option_int[0].type" />
                                 </a-form-item>
                                 <a-form-item label="描述">
-                                    <a-textarea v-model:value="Option_int[0].description"
-                                        placeholder="" disabled
+                                    <a-textarea :value="Option_int[0].description"
+                                        placeholder=""
                                         :auto-size="{ minRows: 2, maxRows: 5 }" />
                                 </a-form-item>
                                 <a-form-item>
@@ -209,14 +209,14 @@
                         <div class="option-form">
                             <a-form style="padding-right: 30px">
                                 <a-form-item label="名称">
-                                    <a-input v-model:value="Option_cate[0].name" disabled/>
+                                    <a-input :value="Option_cate[0].name" />
                                 </a-form-item>
                                 <a-form-item label="类型">
-                                    <a-input v-model:value="Option_cate[0].type" disabled/>
+                                    <a-input :value="Option_cate[0].type" />
                                 </a-form-item>
                                 <a-form-item label="描述">
-                                    <a-textarea v-model:value="Option_cate[0].description"
-                                        placeholder="" disabled
+                                    <a-textarea :value="Option_cate[0].description"
+                                        placeholder="" 
                                         :auto-size="{ minRows: 2, maxRows: 5 }" />
                                 </a-form-item>
                                 <a-form-item label="值域">

@@ -234,7 +234,7 @@ export default {
 
             for (let i = 0; i < this.data.length; i ++)
                 if(this.data[i].name === Rmessage.name) {
-                    message.error('This is an error message')
+                    message.error('选项名称重复')
                     return 
                 }
 
@@ -247,7 +247,7 @@ export default {
             }
             else if(Rmessage.type === "Integer") {
                 if(Rmessage.min_value > Rmessage.max_value) {
-                    message.error('This is an error message')
+                    message.error('最小值大于最大值')
                     return 
                 }
                 let str = Rmessage.min_value.toString() + " ~ " + Rmessage.max_value.toString()
@@ -259,7 +259,7 @@ export default {
             }
             else if(Rmessage.type === "Float") {
                 if(Rmessage.min_value > Rmessage.max_value) {
-                    message.error('This is an error message')
+                    message.error('最小值大于最大值')
                     return 
                 }
                 let str = "[ " + Rmessage.min_value.toString() + " , " + Rmessage.max_value.toString() + "]"
@@ -271,7 +271,7 @@ export default {
             }
             else if(Rmessage.type === "Category") {
                 if(Rmessage.possible.length < 1) {
-                    message.error('This is an error message')
+                    message.error('值域不能为空')
                     return 
                 }
                 new_data.possible.push(Rmessage.possible[0])

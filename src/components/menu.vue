@@ -1,55 +1,62 @@
 <template>
-    <a-menu id="dddddd" style="width: 256px" v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys"
-        mode="inline" @click="handleClick">
+    <a-menu id="dddddd" style="width: 256px" v-model:openKeys="openKeys" 
+    v-model:selectedKeys="selectedKeys"
+    mode="inline" @click="handleClick">
+
         <a-sub-menu key="sub1" @titleClick="titleClick">
             <template #icon>
-                <MailOutlined />
+                <BarsOutlined />
             </template>
-            <template #title>Navigation One</template>
-            <a-menu-item-group key="g1">
-                <template #icon>
-                    <QqOutlined />
-                </template>
-                <template #title>Item 1</template>
-                <a-menu-item key="1">Option 1</a-menu-item>
-                <a-menu-item key="2">Option 2</a-menu-item>
-            </a-menu-item-group>
-            <a-menu-item-group key="g2" title="Item 2">
-                <a-menu-item key="3">Option 3</a-menu-item>
-                <a-menu-item key="4">Option 4</a-menu-item>
-            </a-menu-item-group>
+            <template #title>Step 1 选项设置</template>
+            <a-menu-item key="1">选项类型</a-menu-item>
+            <a-menu-item key="2">选项列表</a-menu-item>
+            <a-menu-item key="3">文件格式</a-menu-item>
         </a-sub-menu>
+
         <a-sub-menu key="sub2" @titleClick="titleClick">
             <template #icon>
-                <AppstoreOutlined />
+                <BarsOutlined />
             </template>
-            <template #title>Navigation Two</template>
-            <a-menu-item key="5">Option 5</a-menu-item>
-            <a-menu-item key="6">Option 6</a-menu-item>
-            <a-sub-menu key="sub3" title="Submenu">
-                <a-menu-item key="7">Option 7</a-menu-item>
-                <a-menu-item key="8">Option 8</a-menu-item>
-            </a-sub-menu>
+            <template #title>Step 2 约束设置</template>
+            <a-menu-item key="4">约束类型</a-menu-item>
+            <a-menu-item key="5">约束的添加与编辑</a-menu-item>
+            <a-menu-item key="6">约束列表</a-menu-item>
+            <a-menu-item key="7">文件格式</a-menu-item>
+            <a-menu-item key="8">模型下载</a-menu-item>
         </a-sub-menu>
         <a-sub-menu key="sub4">
             <template #icon>
-                <SettingOutlined />
+                <BarsOutlined />
             </template>
-            <template #title>Navigation Three</template>
-            <a-menu-item key="9">Option 9</a-menu-item>
-            <a-menu-item key="10">Option 10</a-menu-item>
-            <a-menu-item key="11">Option 11</a-menu-item>
-            <a-menu-item key="12">Option 12</a-menu-item>
+            <template #title>Step 3 开始生成</template>
+            <a-menu-item key="9">开始生成</a-menu-item>
         </a-sub-menu>
+        <a-sub-menu key="sub5">
+            <template #icon>
+                <BarsOutlined />
+            </template>
+            <template #title>Step 4 查看结果</template>
+            <a-menu-item key="10">查看结果</a-menu-item>
+            <a-menu-item key="11">下载结果</a-menu-item>
+        </a-sub-menu>
+        <!-- <a-sub-menu key="sub6">
+            <template #icon>
+                <BarsOutlined />
+            </template>
+            <template #title>Step 5 快速开始</template>
+        </a-sub-menu> -->
+        <!-- <a-menu-item key="12">
+            Step 5 快速开始
+        </a-menu-item> -->
     </a-menu>
 </template>
 <script>
 import { defineComponent, ref, watch } from 'vue';
-import { MailOutlined, QqOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
+import { BarsOutlined, MailOutlined, QqOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
 export default defineComponent({
     name: "Menu",
     setup() {
-        const selectedKeys = ref(['1']);
+        const selectedKeys = ref([]);
         const openKeys = ref(['sub1']);
         const handleClick = e => {
             console.log('click', e);
@@ -75,6 +82,7 @@ export default defineComponent({
         QqOutlined,
         AppstoreOutlined,
         SettingOutlined,
+        BarsOutlined,
     },
 });
 </script>

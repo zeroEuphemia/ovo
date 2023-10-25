@@ -496,7 +496,8 @@ export default {
                 this.visible = false
             
             }).catch(error => {
-                console.error(error)
+                // console.error(error)
+                message.error("表达式非法")
             });
         },
 

@@ -42,10 +42,11 @@
 import optAvatar from "@/components/opt-avatar.vue"
 import { get_constraint_obj, download_model } from "@/utils/api"
 import { ref } from 'vue'
+import { message } from 'ant-design-vue'
 export default {
     name: "ConstraintList2",
     components: {
-        optAvatar,
+        optAvatar, message,
     },
     data() {
 		return {
@@ -99,7 +100,8 @@ export default {
                 downloadLink.click()
 
             }).catch(error => {
-                console.error(error);
+                // console.error(error);
+                message.error("下载失败")
             });
         },
 

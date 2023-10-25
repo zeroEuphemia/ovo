@@ -232,40 +232,168 @@
             <div class="text">
                 得到如下约束列表：
             </div>
-            <div style="width: 600px;">
-                <a-list item-layout="horizontal" :data-source="constraints">
-                    <template #renderItem="{ item, index }">
-                        <a-list-item>
-                            <a-list-item-meta :description = "item.expression">
-                                <template #title>
-                                    {{ item.description }}
-                                </template>
-                            </a-list-item-meta>
+            <div style="display: flex; flex-direction: row; 
+            align-items: start; justify-items: start; height: 220px;">
+                <div style="width: 600px;">
+                    <a-list item-layout="horizontal" :data-source="constraints">
+                        <template #renderItem="{ item, index }">
+                            <a-list-item>
+                                <a-list-item-meta :description = "item.expression">
+                                    <template #title>
+                                        {{ item.description }}
+                                    </template>
+                                </a-list-item-meta>
 
-                            <div class="list-right">
-                                <a-avatar-group :max-count="3" :max-style="{ color: '#f56a00', backgroundColor: '#fde3cf' }"
-                                style="width: 130px;">
-                                    <optAvatar v-for="it in item.component" :msg="it.type"></optAvatar>
-                                </a-avatar-group>
+                                <div class="list-right">
+                                    <a-avatar-group :max-count="3" :max-style="{ color: '#f56a00', backgroundColor: '#fde3cf' }"
+                                    style="width: 130px;">
+                                        <optAvatar v-for="it in item.component" :msg="it.type"></optAvatar>
+                                    </a-avatar-group>
 
-                                <div style="padding-top: 5px; display: flex; flex-direction: row; width: 130px; ">
-                                    <div v-for="(it, index) in item.component">
-                                        <a-tag v-if="index  < 2"> {{ it.name }} </a-tag>
+                                    <div style="padding-top: 5px; display: flex; flex-direction: row; width: 130px; ">
+                                        <div v-for="(it, index) in item.component">
+                                            <a-tag v-if="index  < 2"> {{ it.name }} </a-tag>
+                                        </div>
+                                        <a-popover v-if="item.component.length > 2">
+                                            <template #content>
+                                                <div v-for="(it, index) in item.component">
+                                                    <a-tag v-if="index  >= 2"> {{ it.name }} </a-tag>
+                                                </div>
+                                            </template>
+                                            <a-tag>...</a-tag>
+                                        </a-popover>
                                     </div>
-                                    <a-popover v-if="item.component.length > 2">
-                                        <template #content>
-                                            <div v-for="(it, index) in item.component">
-                                                <a-tag v-if="index  >= 2"> {{ it.name }} </a-tag>
-                                            </div>
-                                        </template>
-                                        <a-tag>...</a-tag>
-                                    </a-popover>
                                 </div>
-                            </div>
-                        </a-list-item>
-                    </template>
-                </a-list>
+                            </a-list-item>
+                        </template>
+                    </a-list>
+                </div>
+
+                <div style="padding-left: 10px;">
+                    <a-tree show-line=true show-icon=true 
+                    :default-expanded-keys="['0-0-0', '0-0-1', '0-0-2']">
+                        <a-tree-node key="0-0">
+                            <template #title>
+                                <div style="display: flex; flex-direction : row;">
+                                    <treeTitle :msg="'OR'" :expression="'(Par0 = true) OR (Par2 > 10)'"></treeTitle>
+                                </div>
+                            </template>
+
+                            <a-tree-node key="0-0-0">
+                                <template #title>
+                                    <div style="display: flex; flex-direction : row;">
+                                        <treeTitle :msg="'='" :expression="'Par0 = true'"></treeTitle>
+                                    </div>
+                                </template>
+                                
+                                <a-tree-node key="0-0-0-0">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'Par0'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+
+                                <a-tree-node key="0-0-0-1">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'true'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+
+                            </a-tree-node>
+                            
+                            <a-tree-node key="0-0-1">
+                                <template #title>
+                                    <div style="display: flex; flex-direction : row;">
+                                        <treeTitle :msg="'>'" :expression="'Par2 > 10'"></treeTitle>
+                                    </div>
+                                </template>
+
+                                <a-tree-node key="0-0-1-0">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'Par2'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+
+                                <a-tree-node key="0-0-1-1">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'10'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+                            </a-tree-node>
+                        </a-tree-node>
+                    </a-tree>
+                </div>
+
+                <div style="padding-left: 20px;">
+                    <a-tree show-line=true show-icon=true 
+                    :default-expanded-keys="['0-0-0', '0-0-1', '0-0-2']">
+                        <a-tree-node key="0-0">
+                            <template #title>
+                                <div style="display: flex; flex-direction : row;">
+                                    <treeTitle :msg="'OR'" :expression="'(Par1 != value1) OR (Par2 <= 18)'"></treeTitle>
+                                </div>
+                            </template>
+
+                            <a-tree-node key="0-0-0">
+                                <template #title>
+                                    <div style="display: flex; flex-direction : row;">
+                                        <treeTitle :msg="'!='" :expression="'Par1 != value1'"></treeTitle>
+                                    </div>
+                                </template>
+                                
+                                <a-tree-node key="0-0-0-0">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'Par1'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+
+                                <a-tree-node key="0-0-0-1">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'value1'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+
+                            </a-tree-node>
+                            
+                            <a-tree-node key="0-0-1">
+                                <template #title>
+                                    <div style="display: flex; flex-direction : row;">
+                                        <treeTitle :msg="'<='" :expression="'Par2 <= 18'"></treeTitle>
+                                    </div>
+                                </template>
+
+                                <a-tree-node key="0-0-1-0">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'Par2'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+
+                                <a-tree-node key="0-0-1-1">
+                                    <template #title>
+                                        <div style="display: flex; flex-direction : row;">
+                                            <treeTitle :msg="'final'" :expression="'18'"></treeTitle>
+                                        </div>
+                                    </template>
+                                </a-tree-node>
+                            </a-tree-node>
+                        </a-tree-node>
+                    </a-tree>
+                </div>
             </div>
+            
 
             <a-divider />
             <h3> 第一步 & 第二步：使用文件 </h3>
@@ -342,10 +470,11 @@ import { PlusOutlined, UploadOutlined, DownloadOutlined } from '@ant-design/icon
 import { EditOutlined, EllipsisOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 import { notification } from 'ant-design-vue'
 import optAvatar from "@/components/opt-avatar.vue"
+import treeTitle from "@/components/tree-title.vue"
 export default {
     name: 'example',
     components: {
-        Menu, optAvatar,
+        Menu, optAvatar, treeTitle,
         
         notification,
         PlusOutlined, UploadOutlined, DownloadOutlined,

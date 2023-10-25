@@ -14,8 +14,11 @@
 import { defineComponent } from 'vue'
 import Axios from "axios"
 import { download_testcases } from "@/utils/api"
-
+import { message } from 'ant-design-vue'
 export default defineComponent({
+    components: { 
+        message,
+    },
     data() {
         return {
             data : [],
@@ -133,7 +136,7 @@ export default defineComponent({
                 downloadLink.click()
 
             }).catch(error => {
-                console.error(error);
+                message.error("下载失败")
             });
         },
     }

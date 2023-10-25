@@ -16,7 +16,7 @@
                     </a-step>
                     <!-- <a-step title="Set Constraints" sub-title="Left 00:00:08" description="This is a description." /> -->
                     <a-step title="设置约束关系" description="Set Constraints" />
-                    <a-step title="开始生成" description="Set Algorithm" />
+                    <a-step title="开始生成" description="Start Generation" />
                     <a-step title="查看结果" description="Result" />
                 </a-steps>
 
@@ -481,7 +481,9 @@ export default {
                 this.loading = false
                 this.setState(4)
             }).catch(error => {
-                console.error(error);
+                // console.error(error);
+                message.error("约束非法")
+                this.loading = false
             });
         },
 
@@ -527,7 +529,8 @@ export default {
                 this.$refs.conList.add_constraint(new_item)
 
             }).catch(error => {
-                console.error(error);
+                // console.error(error);
+                message.error("添加失败")
             });
 
             // this.setState(2)
@@ -834,6 +837,10 @@ export default {
             if(messagef.name === '') {
                 message.error('名称不能为空')
                 return 
+            }
+            if(messagef.name[0] >= '0' && messagef.name[0] <= '9') {
+                message.error('首字母不能为数字')
+                return
             }
             if(messagef.type === undefined) {
                 message.error('请选择类型')

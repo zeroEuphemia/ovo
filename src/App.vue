@@ -1,8 +1,10 @@
 <template>
     <nav>
-        <router-link to="/">Tutorial</router-link> |
-        <router-link to="/main">Main</router-link> |
-        <router-link to="/about">About</router-link>
+        <router-link to="/">Tutorial</router-link> 
+        |
+        <router-link to="/main">Main</router-link> 
+        <!-- |
+        <router-link to="/about">About</router-link> -->
     </nav>
     <router-view />
 </template>

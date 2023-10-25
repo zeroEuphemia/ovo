@@ -143,16 +143,37 @@
                 <div class="text">
                     直接输入表达式：
                 </div>
-                <div class="text" style="padding-left: 100px;">
+                <div class="text" style="padding-left: 250px;">
                     使用树状图可视化界面：
                 </div>
             </div>
 
             <div style="display: flex; flex-direction: row;">
-                <a-input value="(Par0 = true) OR (Par2 > 10)" disabled
-                style="width: 200px; height: 40px;"></a-input>
+                <div style="display: flex; flex-direction: column;">
+                    <a-input value="(Par0 = true) OR (Par2 > 10)"
+                    style="width: 200px; height: 40px;"></a-input>
+                    
+                    <div style="display: flex; flex-direction: column;
+                    padding-top: 20px; align-items: start;">
+                        <code>
+                            该约束表示：
+                        </code>
+                        <code style="padding-top: 10px;">
+                            Par0 = true 和 Par2 > 10
+                        </code>
+                        <code style="padding-top: 10px;">
+                            至少有一个成立。
+                        </code>
 
-                <div style="padding-left: 50px;">
+                        <code style="padding-top: 10px; color: green;">
+                            {{ "即 Par0 = false 且 Par2 <= 10 的情况非法" }}
+                        </code>
+                    </div>
+                    
+                </div>
+               
+
+                <div style="padding-left: 50px; height: 220px;">
                     <a-tree show-line=true show-icon=true 
                     :default-expanded-keys="['0-0-0', '0-0-1', '0-0-2']">
                         <a-tree-node key="0-0">

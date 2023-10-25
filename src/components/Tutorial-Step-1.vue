@@ -437,7 +437,7 @@ export default {
                     type: "Category",
                     description: "这是一个示例",
                     possible_org: ["value-1", "value-2", "value-3",
-                    "value-4", "value-5", "value-6"]
+                    "value-4", "value-5"]
                 }
             ],
 
@@ -466,7 +466,7 @@ export default {
                     type: "Category",
                     description: "这是一个示例",
                     possible_org: ["value-1", "value-2", "value-3",
-                    "value-4", "value-5", "value-6"]
+                    "value-4", "value-5"]
                 }
             ],
 

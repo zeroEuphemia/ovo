@@ -21,9 +21,9 @@
             <div style="width: 1000px; padding-bottom: 0px;">
                 <a-table :columns="columns" :data-source="data" 
                 :scroll="{ x: 1500 }" size="middle">
-                    <template #action>
+                    <!-- <template #action>
                         <a @click="delete_tc">删除</a>
-                    </template>
+                    </template> -->
                 </a-table>
             </div>
 
@@ -121,15 +121,15 @@ export default {
                     key: '9',
                     width: 100,
                 },
-                {
-                    title: '删除',
-                    key: 'operation',
-                    fixed: 'right',
-                    width: 100,
-                    slots: {
-                        customRender: 'action',
-                    },
-                },
+                // {
+                //     title: '删除',
+                //     key: 'operation',
+                //     fixed: 'right',
+                //     width: 100,
+                //     slots: {
+                //         customRender: 'action',
+                //     },
+                // },
             ]
         }
     },

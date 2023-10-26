@@ -761,9 +761,15 @@ export default {
 
             let select_options = []
             for (let i = 0; i < this.options.length; i ++) {
-                if(this.options[i] !== old_option)
-                    select_options.push(this.options[i].name)
-                else select_options.push(new_option.name)
+                if(this.select_options[i].name !== old_option.name)
+                    select_options.push({
+                        value: this.options[i].name,
+                        lable: this.options[i].name,
+                    })
+                else select_options.push({
+                    value: new_option.name,
+                    lable: new_option.name
+                })
             }
             this.select_options = select_options
 

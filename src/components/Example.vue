@@ -9,7 +9,7 @@
             <div style="display: flex; flex-direction: row; justify-items: flex-start;">
                 <div style="display: flex; flex-direction: column; align-items: start;">
                     <div class="text">
-                        假设需要被测试的系统有四个选项：
+                        假设需要被测试的系统有三个选项：
                     </div>
                     <div>
                         <a-table :columns="columns" :data-source="data" size="middle">

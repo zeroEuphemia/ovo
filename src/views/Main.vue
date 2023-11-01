@@ -11,7 +11,7 @@
                         <!-- <span slot="title">Finished</span> -->
                         <template #title>设置选项</template>
                         <template #description>
-                            <span>This is a description.</span>
+                            <span>Set Options</span>
                         </template>
                     </a-step>
                     <!-- <a-step title="Set Constraints" sub-title="Left 00:00:08" description="This is a description." /> -->

@@ -184,7 +184,7 @@ export default {
         
             let options = []
             for (let i = 0; i < this.data.length; i ++) {
-                if(this.data[i] !== old_option)
+                if(this.data[i].name !== old_option.name)
                     options.push(this.data[i])
                 else options.push(new_option)
             }
@@ -192,7 +192,7 @@ export default {
 
             let options_display = []
             for (let i = 0; i < this.data_display.length; i ++) {
-                if(this.data_display[i] !== old_option)
+                if(this.data_display[i].name !== old_option.name)
                     options_display.push(this.data_display[i])
                 else options_display.push(new_option)
             }

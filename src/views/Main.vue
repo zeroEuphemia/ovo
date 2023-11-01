@@ -773,7 +773,7 @@ export default {
             console.log(new_option)
             console.log(this.options)
             sessionStorage.setItem("main-options", JSON.stringify(this.options))
-            sessionStorage.setItem("option_list_data", JSON.stringify(this.options))
+            // sessionStorage.setItem("option_list_data", JSON.stringify(this.options))
 
             let select_options = []
             for (let i = 0; i < this.options.length; i ++) {

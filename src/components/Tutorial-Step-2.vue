@@ -7,6 +7,11 @@
             <a-divider />
             <h3> 约束类型 </h3>
             <div class="text">
+                约束的输入格式参照了
+                <a href="https://github.com/fmselab/ctwedge" target="_blank">CTWedge 输入语言</a>
+                并进行了一些简化和修改。
+            </div>
+            <div class="text">
                 约束的设置支持以多种类型的运算，具体介绍如下（按运算优先级从低到高顺序）：
             </div>
             <div>
@@ -14,18 +19,18 @@
                     <a-collapse-panel key="1" header="ImpliesExpression（<=> 和 => 运算）">
                         <div class="collapse-panel-detail">
                             <code class="text-code-exp" style="color: green;">
-                                // LeftExpression 和 rightExpression 均为布尔表达式
+                                // leftExpression 和 rightExpression 均为布尔表达式
                             </code>
                             <code class="text-code-exp">
-                                {{ "(LeftExpression) <=> (rightExpression)" }} 
+                                {{ "(leftExpression) <=> (rightExpression)" }} 
                                 <span style="color: green;">
-                                    // LeftExpression 与 rightExpression 等价
+                                    // leftExpression 与 rightExpression 等价
                                 </span>
                             </code>
                             <code class="text-code-exp">
-                                {{ "(LeftExpression) => (rightExpression)" }}
+                                {{ "(leftExpression) => (rightExpression)" }}
                                 <span style="color: green;">
-                                    // 若 LeftExpression 为 True 则 rightExpression 为 True
+                                    // 若 leftExpression 为 True 则 rightExpression 为 True
                                 </span>
                             </code>
                         </div>
@@ -406,6 +411,9 @@
 
             <a-divider />
             <h3> 模型下载 </h3>
+            <div class="text" style="color: #8294C4">
+                模型：描述待测系统的文件。
+            </div>
             <div class="text">
                 对于手动添加而非上传文件添加的选项与约束，点击下载按钮，可下载包含当前的选项与限制的文件。
             </div>

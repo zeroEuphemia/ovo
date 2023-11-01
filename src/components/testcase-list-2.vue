@@ -13,7 +13,7 @@
 <script>
 import { defineComponent } from 'vue'
 import Axios from "axios"
-import { download_testcases } from "@/utils/api"
+import { download_testcases, download_testcases_csv } from "@/utils/api"
 import { message } from 'ant-design-vue'
 export default defineComponent({
     components: { 
@@ -135,6 +135,26 @@ export default defineComponent({
                 // 模拟用户点击链接以触发下载
                 downloadLink.click()
 
+            }).catch(error => {
+                message.error("下载失败")
+            });
+        },
+
+        download_tc_csv() {
+            // console.log("download_tc_csv")
+            const columns = this.columns
+            const data = this.data
+            download_testcases_csv({
+                columns : columns,
+                data : data
+            }).then((response) => {
+                const blob = new Blob([response.data], { type: "text/csv" })
+                
+                const downloadLink = document.createElement('a')
+                downloadLink.href = window.URL.createObjectURL(blob)
+                downloadLink.download = "downloaded-file.csv" // 使用 .csv 扩展名
+                // 模拟用户点击链接以触发下载
+                downloadLink.click()
             }).catch(error => {
                 message.error("下载失败")
             });

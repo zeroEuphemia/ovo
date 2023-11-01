@@ -72,8 +72,8 @@
                                 <a-radio-button value="<="> {{ "<=" }} </a-radio-button>
                                 <a-radio-button value=">"> > </a-radio-button>
                                 <a-radio-button value="<"> {{ "<" }} </a-radio-button>
-                                <a-radio-button value="opt"> option </a-radio-button>
-                                <a-radio-button value="const"> const </a-radio-button>
+                                <a-radio-button value="opt"> 选项 </a-radio-button>
+                                <a-radio-button value="const"> 常量 </a-radio-button>
                             </div>
                             
                         </a-radio-group>    
@@ -271,8 +271,8 @@
                                 <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value=">"> > </a-radio-button>
                                 <a-radio-button v-if="value_type === '>=' || value_type === '<=' || value_type === '>' || value_type === '<'" value="<"> {{ "<" }} </a-radio-button>
                                 
-                                <a-radio-button v-if="value_type === 'opt' || value_type === 'const' || value_type === 'final'" value="opt"> option </a-radio-button>
-                                <a-radio-button v-if="value_type === 'opt' || value_type === 'const' || value_type === 'final'" value="const"> const </a-radio-button>
+                                <a-radio-button v-if="value_type === 'opt' || value_type === 'const' || value_type === 'final'" value="opt"> 选项 </a-radio-button>
+                                <a-radio-button v-if="value_type === 'opt' || value_type === 'const' || value_type === 'final'" value="const"> 常量 </a-radio-button>
                             </div>
                         </a-radio-group>
                     </div>

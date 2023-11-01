@@ -3,7 +3,7 @@
         <div class="home-menu">
             <a-menu v-model:selectedKeys="current" mode="horizontal">
                 <a-menu-item key="step1" @click="set_current(1)">
-                    Stpe 1 设置选项
+                    Step 1 设置选项
                 </a-menu-item>
                 <a-menu-item key="step2" @click="set_current(2)">
                     Step 2 设置约束
@@ -65,6 +65,9 @@ export default {
     created() {
         // 在组件创建时加载数据
         this.loadDataFromSessionStorage()
+    },
+    mounted() {
+        
     },
 }
 </script>

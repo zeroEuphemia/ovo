@@ -42,6 +42,15 @@ export function download_testcases(data) {
     })
 }
 
+export function download_testcases_csv(data) {
+    return request({
+        url: 'api/download_testcases_csv',
+        responseType: 'blob',
+        method: 'post',
+        data,
+    })
+}
+
 export function download_model(data) {
     return request({
         url: 'api/download_model',

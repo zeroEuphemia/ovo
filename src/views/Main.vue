@@ -39,7 +39,7 @@
                     </div>
 
                     <div>
-                        <a-button type="link" :disabled="state === 4" @click="NextState">
+                        <a-button type="link" :disabled="(state === 4) || (state === 1 && options.length < 1)" @click="NextState">
                             <StepForwardOutlined />
                             下一步
                         </a-button>
@@ -198,6 +198,12 @@
                                 <DownloadOutlined />
                                 下载
                             </a-button>
+                        </div>
+                        <div style="padding-left: 20px;">
+                            <a-radio-group
+                            :options="download_type_options"
+                            v-model:value="download_type">
+                            </a-radio-group>
                         </div>
                     </div>
                     
@@ -378,6 +384,9 @@ export default {
     },
 	data() {
 		return {
+
+            download_type_options: [".xls", ".csv"],
+            download_type: ".xls",
 
             loading: false,
 
@@ -592,7 +601,10 @@ export default {
         },
 
         download_tc() {
-            this.$refs.tcList.download_tc()
+            if(this.download_type === ".xls")
+                this.$refs.tcList.download_tc()
+            else
+                this.$refs.tcList.download_tc_csv()
         },
 
         loadDataFromSessionStorage() {
@@ -752,12 +764,16 @@ export default {
 
             let options = []
             for (let i = 0; i < this.options.length; i ++) {
-                if(this.options[i] !== old_option)
+                if(this.options[i].name !== old_option.name)
                     options.push(this.options[i])
                 else options.push(new_option)
             }
             this.options = options
+            console.log(old_option)
+            console.log(new_option)
+            console.log(this.options)
             sessionStorage.setItem("main-options", JSON.stringify(this.options))
+            sessionStorage.setItem("option_list_data", JSON.stringify(this.options))
 
             let select_options = []
             for (let i = 0; i < this.options.length; i ++) {
@@ -845,7 +861,7 @@ export default {
                 return 
             }
             if(messagef.name[0] >= '0' && messagef.name[0] <= '9') {
-                message.error('首字母不能为数字')
+                message.error('首字符不能为数字')
                 return
             }
             if(messagef.type === undefined) {
@@ -854,6 +870,20 @@ export default {
             }
             if(messagef.type === "Category" && messagef.possible.length === 0) {
                 message.error('请至少设置一个值域')
+                return
+            }
+
+            for(let i = 0; i < messagef.name.length; i ++) {
+                if(messagef.name[i] >= '0' && messagef.name[i] <= '9')
+                    continue
+                if(messagef.name[i] >= 'a' && messagef.name[i] <= 'z')
+                    continue
+                if(messagef.name[i] >= 'A' && messagef.name[i] <= 'Z')
+                    continue
+                if(messagef.name[i] === '_')
+                    continue
+                
+                message.error('名称只能包含字母、数字、下划线')
                 return
             }
 

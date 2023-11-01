@@ -5,7 +5,7 @@
             <h2> Step 1 设置选项 </h2>
             
             <a-divider />
-            <h3> 选项类型 </h3>
+            <h3 id="step1section1"> 选项类型 </h3>
             
             <div class="text">
                 支持三种类型的选项：Boolean、Integer、Category，具体介绍如下：
@@ -233,8 +233,9 @@
                                 <a-form-item>
                                     <div style="display: flex; flex-wrap: wrap;">
                                         <div v-for="it in Option_cate[0].possible_org" :key="it">
-                                            <a-tag closable disabled>
+                                            <a-tag disabled>
                                                 {{ it }}
+                                                <span style="color: rgba(1, 1, 1, 0.5);">x</span>
                                             </a-tag>
                                         </div>
                                     </div>
@@ -268,7 +269,7 @@
             </a-collapse>
             
             <a-divider />
-            <h3> 选项列表 </h3>
+            <h3 id="step1section2"> 选项列表 </h3>
             <div class="text">
                 在选项列表中可以根据选项的类型对选项进行筛选，可以查看选中的选项的详细信息，并进行编辑或删除。
             </div>
@@ -363,7 +364,7 @@
             </div>
             
             <a-divider />
-            <h3> 文件格式 </h3>
+            <h3 id="step1section3"> 文件格式 </h3>
             <div class="text">
                 可以使用上传文件的方式，快速批量地添加选项，具体格式要求如下。
             </div>

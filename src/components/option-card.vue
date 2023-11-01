@@ -210,6 +210,36 @@ export default {
                 message.error('名称不能为空')
                 return 
             }
+            
+            if(messagef.name[0] >= '0' && messagef.name[0] <= '9') {
+                message.error('首字符不能为数字')
+                return
+            }
+            
+            for(let i = 0; i < messagef.name.length; i ++) {
+                if(messagef.name[i] >= '0' && messagef.name[i] <= '9')
+                    continue
+                if(messagef.name[i] >= 'a' && messagef.name[i] <= 'z')
+                    continue
+                if(messagef.name[i] >= 'A' && messagef.name[i] <= 'Z')
+                    continue
+                if(messagef.name[i] === '_')
+                    continue
+                
+                message.error('名称只能包含字母、数字、下划线')
+                return
+            }
+            if(messagef.name !== this.item.name) {
+                const storedData = sessionStorage.getItem("option_list_data")
+                if(storedData) {
+                    const options = JSON.parse(storedData)
+                    for(let i = 0; i < options.length; i ++)
+                        if(messagef.name === options[i].name) {
+                            message.error('名称重复')
+                            return
+                        }
+                }
+            }
             if(messagef.type === undefined) {
                 message.error('请选择类型')
                 return

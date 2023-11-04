@@ -463,8 +463,11 @@ export default {
             this.loading = true
 
             const now_options = this.options
-            const now_constraints = JSON.parse(sessionStorage.getItem("constraint_list_data"))
-            
+            const constraintsData = sessionStorage.getItem("constraint_list_data")
+            let now_constraints = []
+            if (constraintsData)
+                now_constraints = JSON.parse(constraintsData)
+
             let now_constraints_exp = []
             for (let i = 0; i < now_constraints.length; i ++)
                 now_constraints_exp.push(now_constraints[i].expression)

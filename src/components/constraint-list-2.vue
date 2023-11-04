@@ -84,7 +84,10 @@ export default {
         },
 
         Download_Model() {
-            const options = JSON.parse(sessionStorage.getItem("option_list_data"))
+            const optionData = sessionStorage.getItem("option_list_data")
+            let options = []
+            if(optionData)
+                options = JSON.parse(optionData)
             const constraints = this.constraints
             download_model({
                 options : options,

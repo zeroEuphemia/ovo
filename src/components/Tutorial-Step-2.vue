@@ -40,21 +40,21 @@
                     <a-collapse-panel key="2" header="OrExpression（OR 即「或」运算）">
                         <div class="collapse-panel-detail">
                             <code class="text-code-exp" style="color: green;">
-                                // Expression<span style="font-size: 4px; color: grey;">1</span>
-                                Expression<span style="font-size: 4px; color: grey;">2</span>
-                                ... Expression<span style="font-size: 4px; color: grey;">n</span>
+                                // Expression<span style="font-size: 10px; color: grey;">1</span>
+                                Expression<span style="font-size: 10px; color: grey;">2</span>
+                                ... Expression<span style="font-size: 10px; color: grey;">n</span>
                                 均为布尔表达式
                             </code>
                             <code class="text-code-exp">
-                                (Expression<span style="font-size: 4px; color: grey;">1</span>) 
-                                OR (Expression<span style="font-size: 4px; color: grey;">2</span>) 
-                                OR ... OR (Expression<span style="font-size: 4px; color: grey;">n</span>)
+                                (Expression<span style="font-size: 10px; color: grey;">1</span>) 
+                                OR (Expression<span style="font-size: 10px; color: grey;">2</span>) 
+                                OR ... OR (Expression<span style="font-size: 10px; color: grey;">n</span>)
                             </code>
                             <code class="text-code-exp" style="color: green;">
                                 // 该约束要求 
-                                Expression<span style="font-size: 4px; color: grey;">1</span>
-                                Expression<span style="font-size: 4px; color: grey;">2</span>
-                                ... Expression<span style="font-size: 4px; color: grey;">n</span>
+                                Expression<span style="font-size: 10px; color: grey;">1</span>
+                                Expression<span style="font-size: 10px; color: grey;">2</span>
+                                ... Expression<span style="font-size: 10px; color: grey;">n</span>
                                 中至少有一个为 True
                             </code>
                         </div>
@@ -63,21 +63,21 @@
                     <a-collapse-panel key="3" header="AndExpression（AND 即「与」运算）">
                         <div class="collapse-panel-detail">
                             <code class="text-code-exp" style="color: green;">
-                                // Expression<span style="font-size: 4px; color: grey;">1</span>
-                                Expression<span style="font-size: 4px; color: grey;">2</span>
-                                ... Expression<span style="font-size: 4px; color: grey;">n</span>
+                                // Expression<span style="font-size: 10px; color: grey;">1</span>
+                                Expression<span style="font-size: 10px; color: grey;">2</span>
+                                ... Expression<span style="font-size: 10px; color: grey;">n</span>
                                 均为布尔表达式
                             </code>
                             <code class="text-code-exp">
-                                (Expression<span style="font-size: 4px; color: grey;">1</span>) 
-                                AND (Expression<span style="font-size: 4px; color: grey;">2</span>) 
-                                AND ... AND (Expression<span style="font-size: 4px; color: grey;">n</span>)
+                                (Expression<span style="font-size: 10px; color: grey;">1</span>) 
+                                AND (Expression<span style="font-size: 10px; color: grey;">2</span>) 
+                                AND ... AND (Expression<span style="font-size: 10px; color: grey;">n</span>)
                             </code>
                             <code class="text-code-exp" style="color: green;">
                                 // 该约束要求 
-                                Expression<span style="font-size: 4px; color: grey;">1</span>
-                                Expression<span style="font-size: 4px; color: grey;">2</span>
-                                ... Expression<span style="font-size: 4px; color: grey;">n</span>
+                                Expression<span style="font-size: 10px; color: grey;">1</span>
+                                Expression<span style="font-size: 10px; color: grey;">2</span>
+                                ... Expression<span style="font-size: 10px; color: grey;">n</span>
                                 全部为 True
                             </code>
                         </div>

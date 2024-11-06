@@ -4,10 +4,10 @@ import store from '@/store'
 import qs from 'qs'
 import router from '@/router'
 const instance=axios.create({
-    // baseURL:'http://192.168.117.134:80/',
-    baseURL:'http://124.71.183.200:5000/',
-    // baseURL:'http://127.0.0.1:5000/',
-    timeout: 50000,
+    // baseURL:'http://192.168.0.91:5001',
+    // baseURL:'http://124.71.183.200:5001/',
+    baseURL:'http://127.0.0.1:5001/',
+    timeout: 5000,
     headers: {
         'Content-Type':'application/json;charset=UTF'
     },

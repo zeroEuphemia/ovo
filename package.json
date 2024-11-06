@@ -7,11 +7,15 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/theme-one-dark": "^6.1.2",
     "ant-design-vue": "^4.0.0-rc.6",
     "axios": "^1.5.1",
+    "codemirror": "^6.0.1",
     "core-js": "^3.8.3",
     "pdfjs-dist": "^3.11.174",
     "vue": "^3.2.13",
+    "vue-codemirror": "^6.1.1",
     "vue-pdf": "^4.3.0",
     "vue-pdf-embed": "^1.2.1",
     "vue-router": "^4.0.3",

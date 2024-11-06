@@ -1,14 +1,7 @@
 <template>
     <div style="padding-top: 20px;">
-        <h1>CTPlatform：面向可配置软件的测试用例集合生成平台</h1>
+        <h1>这是一个标题喵 (=^ ^=) !</h1>
     </div>
-    <nav>
-        <router-link to="/">Tutorial</router-link> 
-        |
-        <router-link to="/main">Main</router-link> 
-        <!-- |
-        <router-link to="/about">About</router-link> -->
-    </nav>
     <router-view />
 </template>
 
